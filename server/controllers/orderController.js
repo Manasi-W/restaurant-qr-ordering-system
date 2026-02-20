@@ -3,17 +3,17 @@ import Menu from "../models/Menu.js";
 
 export const createOrder = async (req, res) => {
   try {
-    const { items } = req.body;
+    const { restaurant, table, items } = req.body;
 
-    if (!items || items.length === 0) {
-      return res.status(400).json({ message: "Items required" });
+    if (!restaurant || !table || !items || items.length === 0) {
+      return res.status(400).json({ message: "Invalid order data" });
     }
 
-    let orderItems = [];
     let totalAmount = 0;
+    const formattedItems = [];
 
-    for (const item of items) {
-      const menuItem = await Menu.findById(item.menuItemId);
+    for (let item of items) {
+      const menuItem = await Menu.findById(item.menuItem);
 
       if (!menuItem) {
         return res.status(404).json({ message: "Menu item not found" });
@@ -22,27 +22,28 @@ export const createOrder = async (req, res) => {
       const itemTotal = menuItem.price * item.quantity;
       totalAmount += itemTotal;
 
-      orderItems.push({
-        menuItemId: menuItem._id,
+      formattedItems.push({
         name: menuItem.name,
-        price: menuItem.price, // 🔒 SNAPSHOT
+        price: menuItem.price,
         quantity: item.quantity
       });
     }
 
-    const order = new Order({
-      items: orderItems,
+    const newOrder = new Order({
+      restaurant,
+      table,
+      items: formattedItems,
       totalAmount
     });
 
-    await order.save();
+    await newOrder.save();
 
-    res.status(201).json({
+    res.json({
       message: "Order placed successfully",
-      orderId: order._id
+      order: newOrder
     });
+
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -51,41 +52,6 @@ export const getOrders = async (req, res) => {
   try {
     const orders = await Order.find().sort({ createdAt: -1 });
     res.json(orders);
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-export const updateOrderStatus = async (req, res) => {
-  try {
-    const { status } = req.body;
-
-    const order = await Order.findById(req.params.id);
-
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
-    }
-
-    order.status = status;
-    await order.save();
-
-    res.json({ message: "Order status updated" });
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-export const cancelOrder = async (req, res) => {
-  try {
-    const order = await Order.findById(req.params.id);
-
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
-    }
-
-    order.status = "cancelled";
-    await order.save();
-
-    res.json({ message: "Order cancelled" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }

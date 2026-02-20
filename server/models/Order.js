@@ -1,28 +1,24 @@
 import mongoose from "mongoose";
 
+const orderItemSchema = new mongoose.Schema({
+  name: String,
+  price: Number,
+  quantity: Number
+});
+
 const orderSchema = new mongoose.Schema(
   {
-    items: [
-      {
-        menuItemId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Menu",
-          required: true
-        },
-        name: {
-          type: String,
-          required: true
-        },
-        price: {
-          type: Number,
-          required: true
-        },
-        quantity: {
-          type: Number,
-          required: true
-        }
-      }
-    ],
+    restaurant: {
+      type: String,
+      required: true
+    },
+
+    table: {
+      type: String,
+      required: true
+    },
+
+    items: [orderItemSchema],
 
     totalAmount: {
       type: Number,
@@ -31,7 +27,7 @@ const orderSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      default: "pending"
+      default: "Pending"
     }
   },
   { timestamps: true }

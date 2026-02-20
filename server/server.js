@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 
 import publicRoutes from "./routes/publicRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
@@ -9,9 +10,16 @@ import orderRoutes from "./routes/orderRoutes.js";
 import protectedRoutes from "./routes/protectedRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 
+
 dotenv.config();
 
 const app = express();
+
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
+
 app.use(express.json());
 
 mongoose
