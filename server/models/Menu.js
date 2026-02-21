@@ -20,6 +20,7 @@ const menuSchema = new mongoose.Schema(
       default: "General",
     },
     description: String,
+    imageUrl: String,
     available: {
       type: Boolean,
       default: true,

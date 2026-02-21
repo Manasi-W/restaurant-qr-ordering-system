@@ -67,9 +67,16 @@ router.post("/login", async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    // Set HTTP-only cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // only works on https
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
     res.json({
       message: "Login successful",
-      token,
       admin: {
         id: admin._id,
         adminName: admin.adminName,
@@ -78,6 +85,51 @@ router.post("/login", async (req, res) => {
       }
     });
 
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+/* ============================= */
+/* ADMIN LOGOUT */
+/* ============================= */
+
+router.post("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logged out successfully" });
+});
+
+/* ============================= */
+/* GET CURRENT ADMIN (ME) */
+/* ============================= */
+
+router.get("/me", authMiddleware, (req, res) => {
+  res.json(req.admin);
+});
+
+/* ============================= */
+/* UPDATE ADMIN PROFILE */
+/* ============================= */
+
+router.put("/profile", authMiddleware, async (req, res) => {
+  try {
+    const { adminName, restaurantName, email, phone, address, password } = req.body;
+    const admin = await Admin.findById(req.admin.id);
+
+    if (!admin) return res.status(404).json({ message: "Admin not found" });
+
+    if (adminName) admin.adminName = adminName;
+    if (restaurantName) admin.restaurantName = restaurantName;
+    if (email) admin.email = email;
+    if (phone) admin.phone = phone;
+    if (address) admin.address = address;
+
+    if (password) {
+      admin.password = await bcrypt.hash(password, 10);
+    }
+
+    await admin.save();
+    res.json({ message: "Profile updated successfully", admin });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -102,7 +154,8 @@ router.post("/tables", authMiddleware, async (req, res) => {
     const qrCodes = [];
 
     for (let i = 1; i <= tables; i++) {
-      const url = `http://localhost:5173/portal/${admin.restaurantName}/${i}`;
+      const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+      const url = `${frontendUrl}/portal/${admin.restaurantName}/${i}`;
       const qr = await QRCode.toDataURL(url);
 
       qrCodes.push({

@@ -13,18 +13,13 @@ export const createOrder = async (req, res) => {
     const formattedItems = [];
 
     for (let item of items) {
-      const menuItem = await Menu.findById(item.menuItem);
-
-      if (!menuItem) {
-        return res.status(404).json({ message: "Menu item not found" });
-      }
-
-      const itemTotal = menuItem.price * item.quantity;
+      // Store current price to make order "write-once"
+      const itemTotal = item.price * item.quantity;
       totalAmount += itemTotal;
 
       formattedItems.push({
-        name: menuItem.name,
-        price: menuItem.price,
+        name: item.name,
+        price: item.price,
         quantity: item.quantity
       });
     }
@@ -33,7 +28,8 @@ export const createOrder = async (req, res) => {
       restaurant,
       table,
       items: formattedItems,
-      totalAmount
+      totalAmount,
+      status: "Pending"
     });
 
     await newOrder.save();
@@ -48,9 +44,45 @@ export const createOrder = async (req, res) => {
   }
 };
 
+export const getActiveOrders = async (req, res) => {
+  try {
+    const { restaurant, table } = req.params;
+    // Fetch all orders for this table that aren't 'Paid'
+    const orders = await Order.find({
+      restaurant,
+      table,
+      status: { $ne: "Paid" }
+    });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const { restaurantName } = req.admin;
+
+    const order = await Order.findOneAndUpdate(
+      { _id: id, restaurant: restaurantName },
+      { status },
+      { new: true }
+    );
+
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 export const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find().sort({ createdAt: -1 });
+    const { restaurantName } = req.admin;
+    const orders = await Order.find({ restaurant: restaurantName }).sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
     res.status(500).json({ message: "Server error" });

@@ -9,12 +9,15 @@ export const createMenuItem = async (req, res) => {
       return res.status(400).json({ message: "Name and price required" });
     }
 
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : "";
+
     const item = await Menu.create({
       admin: req.admin._id,
       name,
       price,
       category,
       description,
+      imageUrl
     });
 
     res.status(201).json(item);
@@ -45,7 +48,12 @@ export const updateMenuItem = async (req, res) => {
       return res.status(404).json({ message: "Menu item not found" });
     }
 
-    Object.assign(item, req.body);
+    const updateData = { ...req.body };
+    if (req.file) {
+      updateData.imageUrl = `/uploads/${req.file.filename}`;
+    }
+
+    Object.assign(item, updateData);
     await item.save();
 
     res.json(item);

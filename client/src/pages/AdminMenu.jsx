@@ -1,28 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import AdminNavbar from "../components/AdminNavbar";
 
 function AdminMenu() {
   const [menu, setMenu] = useState([]);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-
-  const token = localStorage.getItem("token");
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    category: "General",
+    description: "",
+    image: null
+  });
+  const [editingId, setEditingId] = useState(null);
 
   const fetchMenu = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/menu",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      const res = await axios.get("http://localhost:5000/api/menu", { withCredentials: true });
       setMenu(res.data);
     } catch (err) {
-      console.error(err);
+      console.error(err.response?.data || err.message);
     }
   };
 
@@ -30,97 +26,307 @@ function AdminMenu() {
     fetchMenu();
   }, []);
 
-  const addMenuItem = async (e) => {
-    e.preventDefault();
-
-    try {
-      await axios.post(
-        "http://localhost:5000/api/menu",
-        { name, description, price },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setName("");
-      setDescription("");
-      setPrice("");
-
-      fetchMenu();
-    } catch (err) {
-      console.error(err);
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "image") {
+      setFormData({ ...formData, image: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
     }
   };
 
-  const deleteItem = async (id) => {
-    try {
-      await axios.delete(
-        `http://localhost:5000/api/menu/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("price", formData.price);
+    data.append("category", formData.category);
+    data.append("description", formData.description);
+    if (formData.image) data.append("image", formData.image);
 
+    try {
+      if (editingId) {
+        await axios.put(`http://localhost:5000/api/menu/${editingId}`, data, { withCredentials: true });
+        alert("Item updated! ✨");
+      } else {
+        await axios.post("http://localhost:5000/api/menu", data, { withCredentials: true });
+        alert("Item added! 🍕");
+      }
+      setFormData({ name: "", price: "", category: "General", description: "", image: null });
+      setEditingId(null);
       fetchMenu();
     } catch (err) {
-      console.error(err);
+      console.error("Save Menu Item Error:", err);
+      const msg = err.response?.data?.message || err.response?.data?.error || "Error saving item";
+      alert(msg);
+    }
+  };
+
+  const handleEdit = (item) => {
+    setEditingId(item._id);
+    setFormData({
+      name: item.name,
+      price: item.price,
+      category: item.category || "General",
+      description: item.description || "",
+      image: null
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this item?")) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/menu/${id}`, { withCredentials: true });
+      fetchMenu();
+    } catch (err) {
+      alert("Error deleting item");
     }
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Menu Management</h1>
+    <div style={styles.page}>
+      <AdminNavbar />
+      <div style={styles.container}>
+        <h1 style={styles.title}>{editingId ? "Edit Menu Item" : "Add New Dish"}</h1>
 
-      <form onSubmit={addMenuItem}>
-        <input
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <br /><br />
+        <form onSubmit={handleSubmit} style={styles.formCard}>
+          <div style={styles.inputGroup}>
+            <input
+              name="name"
+              placeholder="Dish Name (e.g. Margherita Pizza)"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+            <input
+              name="price"
+              placeholder="Price (₹)"
+              type="number"
+              value={formData.price}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+          </div>
+          <div style={styles.inputGroup}>
+            <select name="category" value={formData.category} onChange={handleChange} style={styles.input}>
+              <option value="General">General</option>
+              <option value="Starters">Starters</option>
+              <option value="Main Course">Main Course</option>
+              <option value="Beverages">Beverages</option>
+              <option value="Desserts">Desserts</option>
+            </select>
+            <input
+              name="image"
+              type="file"
+              onChange={handleChange}
+              style={styles.input}
+              accept="image/*"
+            />
+          </div>
+          <textarea
+            name="description"
+            placeholder="Short description of the dish..."
+            value={formData.description}
+            onChange={handleChange}
+            style={styles.textarea}
+          />
+          <div style={styles.buttonGroup}>
+            <button type="submit" style={styles.submitBtn}>
+              {editingId ? "Update Item" : "Add to Menu"}
+            </button>
+            {editingId && (
+              <button type="button" onClick={() => { setEditingId(null); setFormData({ name: "", price: "", category: "General", description: "", image: null }); }} style={styles.cancelBtn}>
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
 
-        <input
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
-        <br /><br />
-
-        <input
-          type="number"
-          placeholder="Price"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          required
-        />
-        <br /><br />
-
-        <button type="submit">Add Item</button>
-      </form>
-
-      <hr />
-
-      <h2>Menu Items</h2>
-
-      {menu.map((item) => (
-        <div key={item._id} style={{ marginBottom: "10px" }}>
-          <strong>{item.name}</strong> - ₹{item.price}
-          <br />
-          {item.description}
-          <br />
-          <button onClick={() => deleteItem(item._id)}>
-            Delete
-          </button>
+        <h2 style={styles.subtitle}>Current Menu</h2>
+        <div style={styles.grid}>
+          {menu.map((item) => (
+            <div key={item._id} style={styles.menuCard}>
+              {item.imageUrl && (
+                <img src={`http://localhost:5000${item.imageUrl}`} alt={item.name} style={styles.cardImage} />
+              )}
+              <div style={styles.cardContent}>
+                <div style={styles.cardHeader}>
+                  <h3 style={styles.cardName}>{item.name}</h3>
+                  <span style={styles.cardPrice}>₹{item.price}</span>
+                </div>
+                <p style={styles.cardCategory}>{item.category}</p>
+                <p style={styles.cardDesc}>{item.description}</p>
+                <div style={styles.cardActions}>
+                  <button onClick={() => handleEdit(item)} style={styles.editBtn}>Edit</button>
+                  <button onClick={() => handleDelete(item._id)} style={styles.deleteBtn}>Delete</button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
     </div>
   );
 }
+
+const styles = {
+  page: {
+    minHeight: "100vh",
+    background: "#f8fafc",
+    fontFamily: "'Outfit', sans-serif"
+  },
+  container: {
+    maxWidth: "1100px",
+    margin: "0 auto",
+    padding: "40px 20px"
+  },
+  title: {
+    fontSize: "2.5rem",
+    fontWeight: "800",
+    color: "#1e293b",
+    marginBottom: "30px",
+    textAlign: "center"
+  },
+  formCard: {
+    background: "white",
+    padding: "30px",
+    borderRadius: "16px",
+    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+    marginBottom: "50px"
+  },
+  inputGroup: {
+    display: "flex",
+    gap: "15px",
+    marginBottom: "15px"
+  },
+  input: {
+    flex: 1,
+    padding: "12px 16px",
+    borderRadius: "8px",
+    border: "1px solid #e2e8f0",
+    fontSize: "1rem",
+    outline: "none",
+    transition: "border-color 0.2s"
+  },
+  textarea: {
+    width: "100%",
+    padding: "12px 16px",
+    borderRadius: "8px",
+    border: "1px solid #e2e8f0",
+    fontSize: "1rem",
+    minHeight: "100px",
+    marginBottom: "15px",
+    outline: "none",
+    resize: "vertical"
+  },
+  buttonGroup: {
+    display: "flex",
+    gap: "10px"
+  },
+  submitBtn: {
+    flex: 2,
+    background: "#4f46e5",
+    color: "white",
+    padding: "14px",
+    borderRadius: "8px",
+    border: "none",
+    fontWeight: "600",
+    cursor: "pointer",
+    transition: "background 0.2s"
+  },
+  cancelBtn: {
+    flex: 1,
+    background: "#ef4444",
+    color: "white",
+    padding: "14px",
+    borderRadius: "8px",
+    border: "none",
+    fontWeight: "600",
+    cursor: "pointer"
+  },
+  subtitle: {
+    fontSize: "1.8rem",
+    color: "#334155",
+    marginBottom: "25px"
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+    gap: "25px"
+  },
+  menuCard: {
+    background: "white",
+    borderRadius: "16px",
+    overflow: "hidden",
+    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+    transition: "transform 0.2s"
+  },
+  cardImage: {
+    width: "100%",
+    height: "200px",
+    objectFit: "cover"
+  },
+  cardContent: {
+    padding: "20px"
+  },
+  cardHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "8px"
+  },
+  cardName: {
+    margin: 0,
+    fontSize: "1.25rem",
+    color: "#1e293b"
+  },
+  cardPrice: {
+    fontWeight: "700",
+    color: "#059669",
+    fontSize: "1.1rem"
+  },
+  cardCategory: {
+    fontSize: "0.85rem",
+    color: "#64748b",
+    background: "#f1f5f9",
+    padding: "4px 10px",
+    borderRadius: "100px",
+    display: "inline-block",
+    marginBottom: "10px"
+  },
+  cardDesc: {
+    fontSize: "0.9rem",
+    color: "#475569",
+    marginBottom: "20px",
+    lineHeight: "1.5"
+  },
+  cardActions: {
+    display: "flex",
+    gap: "10px"
+  },
+  editBtn: {
+    flex: 1,
+    padding: "8px",
+    borderRadius: "6px",
+    border: "1px solid #e2e8f0",
+    background: "white",
+    color: "#4f46e5",
+    cursor: "pointer",
+    fontWeight: "600"
+  },
+  deleteBtn: {
+    flex: 1,
+    padding: "8px",
+    borderRadius: "6px",
+    border: "none",
+    background: "#fee2e2",
+    color: "#dc2626",
+    cursor: "pointer",
+    fontWeight: "600"
+  }
+};
 
 export default AdminMenu;
