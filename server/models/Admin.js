@@ -22,6 +22,7 @@ const adminSchema = new mongoose.Schema(
     tables: {
       type: Number,
       default: 0
+<<<<<<< HEAD
     },
 
     // Theme customization
@@ -34,6 +35,9 @@ const adminSchema = new mongoose.Schema(
     // Logo URLs
     adminLogoUrl: String,
     userLogoUrl: String
+=======
+    }
+>>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
 
   },
   { timestamps: true }

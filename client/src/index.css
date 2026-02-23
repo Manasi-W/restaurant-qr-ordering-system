@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;600;700;800&family=Playfair+Display:wght@700;800&display=swap');
 
 :root {
@@ -238,3 +239,69 @@ a:hover {
     padding: 0 var(--spacing-md);
   }
 }
+=======
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background-color: #f4f6f9;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+  margin-bottom: 25px;
+  color: #1f2937;
+}
+
+h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.card {
+  border: 1px solid #e5e7eb;
+  padding: 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  background: #fafafa;
+  transition: 0.2s ease;
+}
+
+.card:hover {
+  background: #f3f4f6;
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+button:hover {
+  background-color: #1d4ed8;
+}
+
+input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+
+strong {
+  display: block;
+  margin-top: 12px;
+  font-size: 16px;
+  color: #111827;
+}
+>>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6

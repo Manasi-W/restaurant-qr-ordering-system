@@ -6,11 +6,16 @@ import AdminMenu from "./pages/AdminMenu";
 import AdminOrders from "./pages/AdminOrders";
 import AdminTables from "./pages/AdminTables";
 import AdminProfile from "./pages/AdminProfile";
+<<<<<<< HEAD
 import AdminSettings from "./pages/AdminSettings";
 import PublicMenu from "./pages/PublicMenu";
 import Checkout from "./pages/Checkout";
 import Payment from "./pages/Payment";
 import PaymentSuccess from "./pages/PaymentSuccess";
+=======
+import PublicMenu from "./pages/PublicMenu";
+import Checkout from "./pages/Checkout";
+>>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
 
 import { Routes, Route } from "react-router-dom";
 
@@ -25,11 +30,16 @@ function App() {
       <Route path="/admin/orders" element={<AdminOrders />} />
       <Route path="/admin/tables" element={<AdminTables />} />
       <Route path="/admin/profile" element={<AdminProfile />} />
+<<<<<<< HEAD
       <Route path="/admin/settings" element={<AdminSettings />} />
       <Route path="/portal/:restaurant/:table" element={<PublicMenu />} />
       <Route path="/checkout/:restaurant/:table" element={<Checkout />} />
       <Route path="/payment/:restaurant/:table" element={<Payment />} />
       <Route path="/payment-success/:restaurant/:table" element={<PaymentSuccess />} />
+=======
+      <Route path="/portal/:restaurant/:table" element={<PublicMenu />} />
+      <Route path="/checkout/:restaurant/:table" element={<Checkout />} />
+>>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
     </Routes>
   );
 }
