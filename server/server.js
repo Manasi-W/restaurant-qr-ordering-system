@@ -4,10 +4,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import path from "path";
-<<<<<<< HEAD
 import fs from "fs";
-=======
->>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
+
 import { fileURLToPath } from "url";
 
 import publicRoutes from "./routes/publicRoutes.js";
@@ -16,10 +14,9 @@ import menuRoutes from "./routes/menuRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import protectedRoutes from "./routes/protectedRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
-<<<<<<< HEAD
+
 import paymentRoutes from "./routes/paymentRoutes.js";
-=======
->>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
+
 
 
 dotenv.config();
@@ -38,15 +35,13 @@ app.use(cookieParser());
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-<<<<<<< HEAD
+
 // Ensure uploads directories exist
 const uploadsDir = path.join(__dirname, "uploads");
 const logosDir = path.join(__dirname, "uploads", "logos");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 if (!fs.existsSync(logosDir)) fs.mkdirSync(logosDir, { recursive: true });
 
-=======
->>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected (local)"))
@@ -57,7 +52,7 @@ app.get("/", (req, res) => {
 });
 
 // ROUTES
-<<<<<<< HEAD
+
 // Payment create-intent (inline to ensure it's always available)
 app.post("/api/payments/create-intent", async (req, res) => {
   try {
@@ -73,18 +68,15 @@ app.post("/api/payments/create-intent", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-=======
->>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
+
 app.use("/api/admin", adminRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/protected", protectedRoutes);
 app.use("/portal", publicRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-<<<<<<< HEAD
+
 app.use("/api/payments", paymentRoutes);
-=======
->>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
 
 const PORT = 5000;
 app.listen(PORT, () => {

@@ -2,18 +2,14 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import QRCode from "qrcode";
-<<<<<<< HEAD
 import multer from "multer";
 import path from "path";
-=======
->>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
 
 import Admin from "../models/Admin.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-<<<<<<< HEAD
 // Multer config for logo uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -24,7 +20,7 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ 
+const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: (req, file, cb) => {
@@ -37,9 +33,6 @@ const upload = multer({
     cb(new Error("Only image files are allowed"));
   }
 });
-
-=======
->>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
 /* ============================= */
 /* ADMIN REGISTER */
 /* ============================= */
@@ -71,10 +64,7 @@ router.post("/register", async (req, res) => {
     });
 
   } catch (error) {
-<<<<<<< HEAD
     console.error("Login Error:", error);
-=======
->>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -122,10 +112,7 @@ router.post("/login", async (req, res) => {
     });
 
   } catch (error) {
-<<<<<<< HEAD
     console.error("Login Error:", error);
-=======
->>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -171,7 +158,6 @@ router.put("/profile", authMiddleware, async (req, res) => {
     await admin.save();
     res.json({ message: "Profile updated successfully", admin });
   } catch (error) {
-<<<<<<< HEAD
     console.error("Login Error:", error);
     res.status(500).json({ message: "Server error" });
   }
@@ -229,8 +215,6 @@ router.post("/logo/upload", authMiddleware, upload.single("logo"), async (req, r
     res.json({ message: "Logo uploaded successfully", logoUrl, admin });
   } catch (error) {
     console.error("Logo Upload Error:", error);
-=======
->>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -271,10 +255,7 @@ router.post("/tables", authMiddleware, async (req, res) => {
     });
 
   } catch (error) {
-<<<<<<< HEAD
     console.error("Login Error:", error);
-=======
->>>>>>> e9b0586b561afbb1060770286b8350347c0a78e6
     res.status(500).json({ message: "Server error" });
   }
 });
