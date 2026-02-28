@@ -25,9 +25,9 @@ const adminSchema = new mongoose.Schema(
     },
     // Theme customization
     themeColors: {
-      primary: { type: String, default: "#f472b6" },
-      secondary: { type: String, default: "#c4b5fd" },
-      accent: { type: String, default: "#86efac" }
+      primary: { type: String, default: "#166534" },
+      secondary: { type: String, default: "#E7E5E4" },
+      accent: { type: String, default: "#65A30D" }
     },
     // Logo URLs
     adminLogoUrl: String,

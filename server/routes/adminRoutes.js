@@ -174,9 +174,17 @@ router.put("/theme", authMiddleware, async (req, res) => {
 
     if (!admin) return res.status(404).json({ message: "Admin not found" });
 
+    // Ensure themeColors object exists
+    if (!admin.themeColors) {
+      admin.themeColors = {};
+    }
+
     if (primary) admin.themeColors.primary = primary;
     if (secondary) admin.themeColors.secondary = secondary;
     if (accent) admin.themeColors.accent = accent;
+
+    // Mark as modified if Mongoose doesn't detect deep changes
+    admin.markModified('themeColors');
 
     await admin.save();
     res.json({ message: "Theme updated successfully", themeColors: admin.themeColors });

@@ -50,7 +50,7 @@ router.get("/:restaurantName/:tableNo", async (req, res) => {
       phone: admin.phone,
       table: tableNo,
       menu: menuWithCounts,
-      themeColors: admin.themeColors || { primary: "#f472b6", secondary: "#c4b5fd", accent: "#86efac" },
+      themeColors: admin.themeColors || { primary: "#166534", secondary: "#E7E5E4", accent: "#65A30D" },
       userLogoUrl: admin.userLogoUrl || null
     });
   } catch (error) {

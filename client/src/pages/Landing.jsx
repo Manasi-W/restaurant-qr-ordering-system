@@ -1,5 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import "./Landing.css";
+import {
+    MenuIcon,
+    OrdersIcon,
+    AnalyticsIcon,
+    ManagementIcon,
+    NotifIcon,
+    StatusIcon,
+    RevenueIcon
+} from "../components/ThemeIcons";
+import hero3dImg from "../assets/hero_3d.png";
 
 function Landing() {
     const navigate = useNavigate();
@@ -12,7 +22,7 @@ function Landing() {
                 <div className="nav-links">
                     <a href="#features">Features</a>
                     <a href="#how-it-works">How it Works</a>
-                    <button onClick={() => navigate("/admin/login")} className="btn-food" style={{ background: 'transparent', color: 'var(--text-dark)', padding: '0.8rem 1.5rem' }}>Login</button>
+                    <button onClick={() => navigate("/admin/login")} className="btn-food btn-nav-login">Login</button>
                     <button onClick={() => navigate("/admin/register")} className="btn-food btn-primary-food">Get Started</button>
                 </div>
             </nav>
@@ -33,12 +43,9 @@ function Landing() {
                 </div>
                 <div className="hero-visual">
                     <img
-                        src="https://images.unsplash.com/photo-1604329760661-e71dc83f2b26?w=800&h=600&fit=crop&auto=format"
-                        alt="Fresh plated dish"
+                        src={hero3dImg}
+                        alt="Modern Restaurant QR Ordering"
                         className="floating-plate"
-                        onError={(e) => {
-                            e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600&fit=crop&auto=format';
-                        }}
                     />
                 </div>
             </header>
@@ -46,26 +53,33 @@ function Landing() {
             {/* Features Section - Reusing "Top List" Grid */}
             <section id="features" className="top-list">
                 <div className="section-head">
+                    <span className="eyebrow">Product Features</span>
                     <h2>Key Benefits</h2>
                     <p>Structured order management for your restaurant</p>
                 </div>
                 <div className="dishes-grid">
                     <div className="dish-card">
-                        <div className="service-icon" style={{ fontSize: '3rem', marginBottom: '1rem' }}>📱</div>
+                        <div className="service-icon-svg">
+                            <MenuIcon color="var(--primary)" size={80} />
+                        </div>
                         <div className="dish-info">
                             <h3>Digital Menus</h3>
                             <p>Beautiful, contactless menus that are always up to date. No more paper menu costs.</p>
                         </div>
                     </div>
                     <div className="dish-card">
-                        <div className="service-icon" style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚡</div>
+                        <div className="service-icon-svg">
+                            <OrdersIcon color="var(--primary)" size={80} />
+                        </div>
                         <div className="dish-info">
                             <h3>Instant Orders</h3>
                             <p>Orders go straight to the kitchen. Track preparation and service from your dashboard.</p>
                         </div>
                     </div>
                     <div className="dish-card">
-                        <div className="service-icon" style={{ fontSize: '3rem', marginBottom: '1rem' }}>📊</div>
+                        <div className="service-icon-svg">
+                            <AnalyticsIcon color="var(--primary)" size={80} />
+                        </div>
                         <div className="dish-info">
                             <h3>Secure Analytics</h3>
                             <p>Monitor total orders, revenue, and popular items through your dedicated admin dashboard.</p>
@@ -78,15 +92,13 @@ function Landing() {
             <section id="how-it-works" className="featured-dish">
                 <div className="featured-img-container">
                     <img
-                        src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=800&h=600&fit=crop&auto=format"
+                        src="https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?w=800&h=600&fit=crop&auto=format"
                         className="featured-img"
-                        alt="Fresh food presentation"
-                        onError={(e) => {
-                            e.target.src = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=600&fit=crop&auto=format';
-                        }}
+                        alt="Chef at work"
                     />
                 </div>
                 <div className="featured-text">
+                    <div className="thematic-badge">Professional Grade</div>
                     <h2>Everything in One Place</h2>
                     <p>
                         Manage your menu—add, update, or remove items in seconds.
@@ -100,67 +112,80 @@ function Landing() {
             {/* Popular / Feedback-style section with food imagery */}
             <section className="feedback-section">
                 <div className="section-head">
+                    <span className="eyebrow">Strategic Value</span>
                     <h2>Why Restaurants Love Us</h2>
                     <p>Simple, reliable ordering that fits your flow</p>
                 </div>
                 <div className="feedback-grid">
                     <div className="feedback-card">
-                        <img
-                            src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&auto=format"
-                            alt="Fresh salad"
-                            className="feedback-img"
-                            onError={(e) => {
-                                e.target.src = 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop&auto=format';
-                            }}
-                        />
-                        <h3>Fresh & Simple</h3>
-                        <p>Customers browse your menu on their phone—no paper, no hassle. Always up to date.</p>
+                        <div className="feedback-img-wrap">
+                            <img
+                                src="/branding/fresh_simple.png"
+                                alt="Premium fresh forest green salad bowl"
+                                className="feedback-img"
+                            />
+                        </div>
+                        <div className="feedback-body">
+                            <h3>Fresh & Simple</h3>
+                            <p>Customers browse your menu on their phone—no paper, no hassle. Always up to date with zero printed costs.</p>
+                        </div>
                     </div>
                     <div className="feedback-card">
-                        <img
-                            src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop&auto=format"
-                            alt="Wood-fired pizza"
-                            className="feedback-img"
-                            onError={(e) => {
-                                e.target.src = 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&h=300&fit=crop&auto=format';
-                            }}
-                        />
-                        <h3>Orders That Flow</h3>
-                        <p>Every order lands in your dashboard. Update status and keep the kitchen in sync.</p>
+                        <div className="feedback-img-wrap">
+                            <img
+                                src="/branding/instant_orders.png"
+                                alt="Minimalist POS ordering system with forest green accents"
+                                className="feedback-img"
+                            />
+                        </div>
+                        <div className="feedback-body">
+                            <h3>Orders That Flow</h3>
+                            <p>Every order lands in your dashboard instantly. Update status and keep the kitchen in perfect harmony.</p>
+                        </div>
                     </div>
                     <div className="feedback-card">
-                        <img
-                            src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=300&fit=crop&auto=format"
-                            alt="Breakfast spread"
-                            className="feedback-img"
-                            onError={(e) => {
-                                e.target.src = 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=400&h=300&fit=crop&auto=format';
-                            }}
-                        />
-                        <h3>Built for You</h3>
-                        <p>One dashboard for menu, orders, and tables. Get started in minutes, not days.</p>
+                        <div className="feedback-img-wrap">
+                            <img
+                                src="/branding/secure_analytics.png"
+                                alt="Elegant forest green 3D analytics visualization"
+                                className="feedback-img"
+                            />
+                        </div>
+                        <div className="feedback-body">
+                            <h3>Built for Growth</h3>
+                            <p>One dashboard for menu, orders, and tables. Scale your business with data-driven insights every day.</p>
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* Services Section */}
             <section className="services">
-                <h2 className="section-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '3.5rem' }}>Core Capabilities</h2>
+                <span className="eyebrow" style={{ display: 'block', marginBottom: '1.5rem' }}>Platform Power</span>
+                <h2 className="section-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '4.5rem', fontWeight: 'var(--weight-black)', letterSpacing: 'var(--letter-spacing-tight)' }}>Core Capabilities</h2>
                 <div className="services-grid">
                     <div className="service-card">
-                        <div className="service-icon">📝</div>
+                        <div className="service-icon-svg">
+                            <ManagementIcon size={40} />
+                        </div>
                         <h3>Menu Management</h3>
                     </div>
                     <div className="service-card">
-                        <div className="service-icon">🔔</div>
+                        <div className="service-icon-svg">
+                            <NotifIcon size={40} />
+                        </div>
                         <h3>Order Notifications</h3>
                     </div>
                     <div className="service-card">
-                        <div className="service-icon">🥘</div>
+                        <div className="service-icon-svg">
+                            <StatusIcon size={40} />
+                        </div>
                         <h3>Order Status</h3>
                     </div>
                     <div className="service-card">
-                        <div className="service-icon">💳</div>
+                        <div className="service-icon-svg">
+                            <RevenueIcon size={40} />
+                        </div>
                         <h3>Revenue Insight</h3>
                     </div>
                 </div>

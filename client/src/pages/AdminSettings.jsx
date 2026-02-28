@@ -5,9 +5,9 @@ import "../styles/Admin.css";
 
 function AdminSettings() {
   const [themeColors, setThemeColors] = useState({
-    primary: "#f472b6",
-    secondary: "#c4b5fd",
-    accent: "#86efac"
+    primary: "#166534",
+    secondary: "#E7E5E4",
+    accent: "#65A30D"
   });
   const [adminLogo, setAdminLogo] = useState(null);
   const [userLogo, setUserLogo] = useState(null);
@@ -132,7 +132,7 @@ function AdminSettings() {
           <p style={{ color: "var(--text-tertiary)", marginBottom: "1.5rem", fontSize: "0.9rem" }}>
             Customize colors for your customer-facing menu. Changes apply immediately.
           </p>
-          
+
           <div className="admin-form-grid">
             <div className="admin-form-group">
               <label className="admin-label">Primary Color</label>
@@ -149,7 +149,7 @@ function AdminSettings() {
                   onChange={(e) => handleThemeChange("primary", e.target.value)}
                   className="admin-input"
                   style={{ flex: 1 }}
-                  placeholder="#f472b6"
+                  placeholder="#166534"
                 />
               </div>
             </div>
@@ -168,7 +168,7 @@ function AdminSettings() {
                   onChange={(e) => handleThemeChange("secondary", e.target.value)}
                   className="admin-input"
                   style={{ flex: 1 }}
-                  placeholder="#c4b5fd"
+                  placeholder="#E7E5E4"
                 />
               </div>
             </div>
@@ -187,7 +187,7 @@ function AdminSettings() {
                   onChange={(e) => handleThemeChange("accent", e.target.value)}
                   className="admin-input"
                   style={{ flex: 1 }}
-                  placeholder="#86efac"
+                  placeholder="#65A30D"
                 />
               </div>
             </div>
@@ -205,7 +205,7 @@ function AdminSettings() {
             <button
               type="button"
               onClick={() => {
-                setThemeColors({ primary: "#f472b6", secondary: "#c4b5fd", accent: "#86efac" });
+                setThemeColors({ primary: "#166534", secondary: "#E7E5E4", accent: "#65A30D" });
               }}
               className="admin-btn admin-btn-ghost"
             >

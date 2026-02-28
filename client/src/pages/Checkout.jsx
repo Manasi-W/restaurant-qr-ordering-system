@@ -14,6 +14,29 @@ function Checkout() {
   const [activeOrders, setActiveOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    localStorage.setItem(`cart_${restaurantURL}_${tableId}`, JSON.stringify(cart));
+  }, [cart, restaurantURL, tableId]);
+
+  const addToCart = (item) => {
+    const existing = cart.find((i) => i._id === item._id);
+    if (existing) {
+      setCart(cart.map((i) => i._id === item._id ? { ...i, quantity: i.quantity + 1 } : i));
+    } else {
+      setCart([...cart, { ...item, quantity: 1 }]);
+    }
+  };
+
+  const removeFromCart = (itemId) => {
+    const existing = cart.find((i) => i._id === itemId);
+    if (!existing) return;
+    if (existing.quantity > 1) {
+      setCart(cart.map((i) => i._id === itemId ? { ...i, quantity: i.quantity - 1 } : i));
+    } else {
+      setCart(cart.filter((i) => i._id !== itemId));
+    }
+  };
+
   const fetchActiveOrders = async () => {
     try {
       const res = await axios.get(`http://localhost:5000/api/orders/active/${restaurantURL}/${tableId}`);
@@ -26,6 +49,20 @@ function Checkout() {
   };
 
   useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/portal/${restaurantURL}/${tableId}`);
+        // Apply theme colors
+        if (res.data.themeColors) {
+          document.documentElement.style.setProperty("--primary", res.data.themeColors.primary);
+          document.documentElement.style.setProperty("--secondary", res.data.themeColors.secondary);
+          document.documentElement.style.setProperty("--accent", res.data.themeColors.accent);
+        }
+      } catch (err) {
+        console.error("Error fetching settings", err);
+      }
+    };
+    fetchSettings();
     fetchActiveOrders();
   }, [restaurantURL, tableId]);
 
@@ -41,7 +78,7 @@ function Checkout() {
         items: cart,
         totalAmount: totalCart
       });
-      alert("Order placed!");
+      alert("Order placed successfully!");
       localStorage.removeItem(`cart_${restaurantURL}_${tableId}`);
       setCart([]);
       fetchActiveOrders();
@@ -53,12 +90,12 @@ function Checkout() {
   return (
     <div className="public-page">
       <div className="public-checkout-container">
-        <header className="admin-header" style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+        <header className="public-header" style={{ marginBottom: "1.5rem" }}>
           <button type="button" onClick={() => navigate(-1)} className="public-back-btn">
             ← Back to Menu
           </button>
-          <h1 className="admin-title">Your Table&apos;s Bill</h1>
-          <p className="admin-subtitle">Table {tableId} • {restaurantURL}</p>
+          <h1 className="public-restaurant-name">Your Table&apos;s Bill</h1>
+          <p className="public-header-sub">Table {tableId} • {restaurantURL}</p>
         </header>
 
         {cart.length > 0 && (
@@ -66,9 +103,19 @@ function Checkout() {
             <h2 className="public-section-title">New Order (In Cart)</h2>
             <div className="public-order-card">
               {cart.map((item) => (
-                <div key={item._id} className="public-order-row">
-                  <span>{item.name} x {item.quantity}</span>
-                  <span style={{ fontWeight: 600 }}>₹{item.price * item.quantity}</span>
+                <div key={item._id} className="public-order-row" style={{ alignItems: 'center' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontWeight: 500 }}>{item.name}</span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--gray-500)' }}>₹{item.price} each</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div className="public-quantity-controls" style={{ scale: '0.8' }}>
+                      <button type="button" onClick={() => removeFromCart(item._id)} className="public-qty-btn minus">-</button>
+                      <span className="public-qty-display">{item.quantity}</span>
+                      <button type="button" onClick={() => addToCart(item)} className="public-qty-btn plus">+</button>
+                    </div>
+                    <span style={{ fontWeight: 600, minWidth: '60px', textAlign: 'right' }}>₹{item.price * item.quantity}</span>
+                  </div>
                 </div>
               ))}
               <div className="public-order-total-row">

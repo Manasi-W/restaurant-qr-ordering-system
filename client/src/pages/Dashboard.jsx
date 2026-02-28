@@ -3,6 +3,11 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import AdminNavbar from "../components/AdminNavbar";
 import "../styles/Admin.css";
+import { OrdersIcon, RevenueIcon, DishIcon, CartIcon, QRCodeIcon, ForkKnifeIcon, ArrowUpRightIcon, ClocheIcon, CalendarChartIcon, CoinDishIcon, GrowthIcon, ClipboardCheckIcon, ServerChefIcon, RibbonBadgeIcon, SettingsProfileIcon } from "../components/ThemeIcons";
+import PizzaImage from "../assets/pizza_slice_3d.png";
+import BiryaniImage from "../assets/biryani_icon_3d.png";
+import FriesImage from "../assets/fries_icon_3d.png";
+import DosaImage from "../assets/dosa_icon_3d.png";
 
 function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -41,55 +46,130 @@ function Dashboard() {
         </header>
 
         <div className="admin-stats-grid">
-          <div className="admin-stat-card">
-            <span className="admin-stat-label">Today&apos;s Orders</span>
-            <h2 className="admin-stat-value">{stats?.todayOrders ?? 0}</h2>
-            <div className="admin-stat-hint">Track today&apos;s activity</div>
+          <div className="admin-stat-card-illustrative">
+            <div className="admin-stat-icon-illustrative theme-order">
+              <ClocheIcon size={40} />
+            </div>
+            <div className="admin-stat-info">
+              <span className="admin-stat-label">Today&apos;s Orders</span>
+              <h2 className="admin-stat-value-compact">{stats?.todayOrders ?? 0}</h2>
+              <div className="admin-stat-hint">Orders Tracking Today</div>
+            </div>
+            <div className="admin-stat-wave">
+              <svg viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q 25 20 50 10 T 100 10" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.1" /></svg>
+            </div>
           </div>
-          <div className="admin-stat-card">
-            <span className="admin-stat-label">Monthly Orders</span>
-            <h2 className="admin-stat-value">{stats?.monthlyOrders ?? 0}</h2>
-            <div className="admin-stat-hint">Running total for this month</div>
+
+          <div className="admin-stat-card-illustrative">
+            <div className="admin-stat-icon-illustrative theme-monthly">
+              <CalendarChartIcon size={40} />
+            </div>
+            <div className="admin-stat-info">
+              <span className="admin-stat-label">Monthly Orders</span>
+              <h2 className="admin-stat-value-compact">{stats?.monthlyOrders ?? 0}</h2>
+              <div className="admin-stat-hint">Monthly Running Total</div>
+            </div>
+            <div className="admin-stat-wave">
+              <svg viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q 25 0 50 10 T 100 10" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.1" /></svg>
+            </div>
           </div>
-          <div className="admin-stat-card highlight-green">
-            <span className="admin-stat-label">Today&apos;s Revenue</span>
-            <h2 className="admin-stat-value">₹{stats?.todayRevenue?.toLocaleString() ?? 0}</h2>
-            <div className="admin-stat-hint">Finalized payments</div>
+
+          <div className="admin-stat-card-illustrative">
+            <div className="admin-stat-icon-illustrative theme-revenue">
+              <CoinDishIcon size={40} />
+            </div>
+            <div className="admin-stat-info">
+              <span className="admin-stat-label">Today&apos;s Revenue</span>
+              <h2 className="admin-stat-value-compact">₹{stats?.todayRevenue?.toLocaleString() ?? 0}</h2>
+              <div className="admin-stat-hint">Total Finalized Payments</div>
+            </div>
+            <div className="admin-stat-wave">
+              <svg viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q 25 10 50 10 T 100 10" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.1" /></svg>
+            </div>
           </div>
-          <div className="admin-stat-card highlight-purple">
-            <span className="admin-stat-label">Monthly Revenue</span>
-            <h2 className="admin-stat-value">₹{stats?.totalMonthlyRevenue?.toLocaleString() ?? 0}</h2>
-            <div className="admin-stat-hint">Year-to-month growth</div>
+
+          <div className="admin-stat-card-illustrative">
+            <div className="admin-stat-icon-illustrative theme-growth">
+              <GrowthIcon size={40} />
+            </div>
+            <div className="admin-stat-info">
+              <span className="admin-stat-label">Month-to-Month Growth</span>
+              <h2 className="admin-stat-value-compact">₹{stats?.totalMonthlyRevenue?.toLocaleString() ?? 0}</h2>
+              <div className="admin-stat-hint">Monthly Performance</div>
+            </div>
+            <div className="admin-stat-wave">
+              <svg viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q 25 20 50 10 T 100 10" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.1" /></svg>
+            </div>
           </div>
         </div>
 
-        <div className="admin-bottom-grid">
-          <div className="admin-card">
-            <h3 className="admin-card-title">Top Selling Items</h3>
-            <div className="admin-item-list">
+        <div className="admin-bottom-flex-layout">
+          <div className="admin-items-horizontal-section">
+            <div className="admin-section-head">
+              <h3 className="admin-card-title">Top Ranked Items</h3>
+            </div>
+            <div className="admin-food-list-vertical">
               {stats?.topSellingItems?.map((item, index) => (
-                <div key={index} className="admin-item-row">
-                  <div>
-                    <span className="admin-item-rank">#{index + 1}</span>
-                    <span className="admin-item-name">{item._id}</span>
+                <div key={index} className="admin-food-row-matched">
+                  <div className="admin-food-row-rank">
+                    <span className="admin-rank-number">#{index + 1}</span>
                   </div>
-                  <div className="admin-item-meta">
-                    <span className="admin-item-sold">{item.totalSold} sold</span>
-                    <span className="admin-item-revenue">₹{item.revenue?.toLocaleString()}</span>
+                  <div className="admin-food-row-media">
+                    {item._id.toLowerCase().includes('pizza') ? (
+                      <img src={PizzaImage} alt="Pizza" />
+                    ) : item._id.toLowerCase().includes('biryani') ? (
+                      <img src={BiryaniImage} alt="Biryani" />
+                    ) : item._id.toLowerCase().includes('fries') ? (
+                      <img src={FriesImage} alt="Fries" />
+                    ) : item._id.toLowerCase().includes('dosa') ? (
+                      <img src={DosaImage} alt="Dosa" />
+                    ) : (
+                      <DishIcon size={40} color="var(--primary)" opacity={0.6} />
+                    )}
+                  </div>
+                  <div className="admin-food-row-info">
+                    <h4 className="admin-food-name-row">{item._id}</h4>
+                  </div>
+                  <div className="admin-food-row-metrics">
+                    <div className="admin-metric-group">
+                      <span className="admin-metric-label">Sold</span>
+                      <span className="admin-metric-value">{item.totalSold}</span>
+                    </div>
+                    <div className="admin-metric-group">
+                      <span className="admin-metric-label">Revenue</span>
+                      <span className="admin-metric-value">₹{item.revenue?.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <div className="admin-food-row-meta">
+                    <ArrowUpRightIcon size={16} color="var(--success)" />
                   </div>
                 </div>
               ))}
               {(!stats?.topSellingItems || stats.topSellingItems.length === 0) && (
-                <p className="admin-empty">No data available yet.</p>
+                <p className="admin-empty">No selling data yet.</p>
               )}
             </div>
           </div>
-          <div className="admin-card">
-            <h3 className="admin-card-title">Quick Actions</h3>
-            <div className="admin-actions-stack">
-              <Link to="/admin/tables" className="admin-btn admin-btn-primary">Generate QR Codes</Link>
-              <Link to="/admin/orders" className="admin-btn admin-btn-ghost">View Orders</Link>
-              <Link to="/admin/menu" className="admin-btn admin-btn-ghost">Update Menu</Link>
+
+          <div className="admin-quick-actions-sidebar">
+            <h3 className="admin-card-title">Quick Actions & Tools</h3>
+            <div className="admin-actions-grid-illustrative">
+              <Link to="/admin/tables" className="admin-action-box bg-dark-green">
+                <QRCodeIcon size={44} color="white" />
+                <div className="admin-action-label">Generate QR Codes</div>
+              </Link>
+              <Link to="/admin/orders" className="admin-action-box bg-light-green">
+                <ClipboardCheckIcon size={44} color="black" />
+                <div className="admin-action-label">View Incoming Orders</div>
+              </Link>
+              <Link to="/admin/menu" className="admin-action-box bg-cream">
+                <ServerChefIcon size={44} color="black" />
+                <div className="admin-action-label">Update Menu List</div>
+              </Link>
+              <Link to="/admin/profile" className="admin-action-box bg-grey">
+                <SettingsProfileIcon size={44} />
+                <div className="admin-action-label">Settings & Profile</div>
+              </Link>
             </div>
           </div>
         </div>

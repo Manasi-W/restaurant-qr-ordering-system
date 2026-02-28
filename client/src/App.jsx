@@ -11,6 +11,7 @@ import PublicMenu from "./pages/PublicMenu";
 import Checkout from "./pages/Checkout";
 import Payment from "./pages/Payment";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import Receipt from "./pages/Receipt";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -30,6 +31,7 @@ function App() {
       <Route path="/checkout/:restaurant/:table" element={<Checkout />} />
       <Route path="/payment/:restaurant/:table" element={<Payment />} />
       <Route path="/payment-success/:restaurant/:table" element={<PaymentSuccess />} />
+      <Route path="/receipt/:restaurant/:table" element={<Receipt />} />
     </Routes>
   );
 }

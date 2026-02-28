@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import AdminNavbar from "../components/AdminNavbar";
 import "../styles/Admin.css";
+import { TableIcon } from "../components/ThemeIcons";
 
 function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -35,11 +36,12 @@ function AdminOrders() {
 
   const getStatusClass = (status) => {
     switch (status) {
-      case "Pending": return { bg: "#fef3c7", color: "#92400e" };
-      case "Cooking": return { bg: "#dbeafe", color: "#1e40af" };
-      case "Served": return { bg: "#d1fae5", color: "#065f46" };
-      case "Paid": return { bg: "#f3f4f6", color: "#374151" };
-      default: return { bg: "#eee", color: "#333" };
+      case "Pending": return "var(--text-medium)";
+      case "Cooking": return "var(--primary)";
+      case "Served": return "var(--success)";
+      case "Paid": return "var(--success)";
+      case "Cancelled": return "var(--danger)";
+      default: return "var(--text-muted)";
     }
   };
 
@@ -67,52 +69,66 @@ function AdminOrders() {
 
         <div className="admin-orders-grid">
           {orders.map((order) => {
-            const statusStyle = getStatusClass(order.status);
+            const statusColor = getStatusClass(order.status);
             return (
-              <div key={order._id} className="admin-order-card">
-                <div className="admin-order-header">
-                  <div>
-                    <span className="admin-order-table-label">TABLE</span>
-                    <span className="admin-order-table-num">{order.table}</span>
-                  </div>
-                  <span
-                    className="admin-order-status"
-                    style={{ backgroundColor: statusStyle.bg, color: statusStyle.color }}
-                  >
-                    {order.status}
-                  </span>
-                </div>
-
-                <div className="admin-order-items">
-                  {order.items.map((item, index) => (
-                    <div key={index} className="admin-order-item-row">
-                      <span className="admin-order-item-name">
-                        {item.name} <small className="admin-order-item-qty">x{item.quantity}</small>
-                      </span>
-                      <span className="admin-order-item-price">₹{item.price * item.quantity}</span>
+              <div key={order._id} className={`admin-order-card-gourmet status-${order.status.toLowerCase()}`}>
+                <div className="admin-order-header-gourmet">
+                  <div className="admin-order-table-section">
+                    <div className="admin-order-table-icon-wrap">
+                      <TableIcon size={24} color="var(--primary)" />
                     </div>
-                  ))}
+                    <div className="admin-order-table-info">
+                      <span className="admin-order-label-mini">TABLE</span>
+                      <h2 className="admin-order-table-display">{order.table}</h2>
+                    </div>
+                  </div>
+                  <div className={`admin-order-status-pill status-${order.status.toLowerCase()}`}>
+                    <span className="status-dot"></span>
+                    {order.status}
+                  </div>
                 </div>
 
-                <div className="admin-order-footer">
-                  <div className="admin-order-total-wrap">
-                    <span className="admin-order-total-label">Total Amount</span>
-                    <span className="admin-order-total-value">₹{order.totalAmount}</span>
+                <div className="admin-order-content-gourmet">
+                  <div className="admin-order-items-scroll">
+                    {order.items.map((item, index) => (
+                      <div key={index} className="admin-order-item-elegant">
+                        <div className="admin-order-item-main">
+                          <span className="admin-order-item-bullet">•</span>
+                          <span className="admin-order-item-name-bold">{item.name}</span>
+                          <span className="admin-order-item-qty-tag">x{item.quantity}</span>
+                        </div>
+                        <span className="admin-order-item-price-fine">₹{item.price * item.quantity}</span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="admin-order-actions">
+                </div>
+
+                <div className="admin-order-footer-gourmet">
+                  <div className="admin-order-divider"></div>
+                  <div className="admin-order-summary-row">
+                    <div className="admin-order-time-stamp">
+                      Ordered at {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                    <div className="admin-order-total-display">
+                      <span className="total-label">Subtotal</span>
+                      <span className="total-value">₹{order.totalAmount}</span>
+                    </div>
+                  </div>
+
+                  <div className="admin-order-actions-row">
                     {order.status === "Pending" && (
-                      <button type="button" onClick={() => updateStatus(order._id, "Cooking")} className="admin-btn admin-btn-primary">
-                        Start Cooking
+                      <button type="button" onClick={() => updateStatus(order._id, "Cooking")} className="admin-btn-action start">
+                        Start Preparation
                       </button>
                     )}
                     {order.status === "Cooking" && (
-                      <button type="button" onClick={() => updateStatus(order._id, "Served")} className="admin-btn admin-btn-success">
-                        Mark Served
+                      <button type="button" onClick={() => updateStatus(order._id, "Served")} className="admin-btn-action success">
+                        Mark as Ready/Served
                       </button>
                     )}
                     {order.status === "Served" && (
-                      <button type="button" onClick={() => updateStatus(order._id, "Paid")} className="admin-btn admin-btn-ghost">
-                        Complete & Paid
+                      <button type="button" onClick={() => updateStatus(order._id, "Paid")} className="admin-btn-action finish">
+                        Complete Order
                       </button>
                     )}
                   </div>

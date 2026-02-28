@@ -30,7 +30,7 @@ function Payment() {
         { withCredentials: true }
       );
       navigate(`/payment-success/${restaurantURL}/${tableId}`, {
-        state: { amount: amountInRupees },
+        state: { amount: amountInRupees, orderIds },
       });
     } catch (err) {
       console.error("Payment verify error:", err);
@@ -53,7 +53,7 @@ function Payment() {
             <span>Amount to pay</span>
             <span style={{ fontWeight: 700, fontSize: "1.25rem" }}>₹{amountInRupees}</span>
           </div>
-          <p className="public-empty-sub" style={{ marginTop: "0.75rem", color: "var(--text-tertiary)" }}>
+          <p className="public-empty-sub" style={{ marginTop: "0.75rem", color: "var(--text-muted)" }}>
             In production, Stripe would show a secure card form here. For demo, click below to confirm payment.
           </p>
         </div>

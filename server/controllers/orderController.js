@@ -1,5 +1,6 @@
 import Order from "../models/Order.js";
 import Menu from "../models/Menu.js";
+import Admin from "../models/Admin.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -9,14 +10,18 @@ export const createOrder = async (req, res) => {
       return res.status(400).json({ message: "Invalid order data" });
     }
 
+    // Find admin to get canonical restaurant name
+    const escapedName = restaurant.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const admin = await Admin.findOne({ restaurantName: { $regex: new RegExp(`^${escapedName}$`, "i") } });
+
+    const canonicalRestaurant = admin ? admin.restaurantName : restaurant;
+
     let totalAmount = 0;
     const formattedItems = [];
 
     for (let item of items) {
-      // Store current price to make order "write-once"
       const itemTotal = item.price * item.quantity;
       totalAmount += itemTotal;
-
       formattedItems.push({
         name: item.name,
         price: item.price,
@@ -25,7 +30,7 @@ export const createOrder = async (req, res) => {
     }
 
     const newOrder = new Order({
-      restaurant,
+      restaurant: canonicalRestaurant,
       table,
       items: formattedItems,
       totalAmount,
@@ -47,12 +52,17 @@ export const createOrder = async (req, res) => {
 export const getActiveOrders = async (req, res) => {
   try {
     const { restaurant, table } = req.params;
-    // Fetch all orders for this table that aren't 'Paid'
-    const orders = await Order.find({
-      restaurant,
-      table,
+
+    const escapedName = restaurant.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`^${escapedName}$`, "i");
+
+    const query = {
+      restaurant: regex,
+      table: table,
       status: { $ne: "Paid" }
-    });
+    };
+
+    const orders = await Order.find(query).sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
@@ -71,7 +81,9 @@ export const updateOrderStatus = async (req, res) => {
       { new: true }
     );
 
-    if (!order) return res.status(404).json({ message: "Order not found" });
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
 
     res.json(order);
   } catch (error) {
