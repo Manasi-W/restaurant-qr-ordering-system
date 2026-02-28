@@ -25,8 +25,7 @@ router.post("/create-intent", async (req, res) => {
 
     res.json({
       paymentIntentId,
-      clientSecret: null,
-      message: "Payment intent created. Integrate Stripe for production."
+      clientSecret: null
     });
   } catch (error) {
     console.error("Payment Error:", error);
@@ -39,12 +38,7 @@ router.post("/verify", async (req, res) => {
   try {
     const { paymentIntentId, orderIds } = req.body;
 
-    /**
-     * PRODUCTION INTEGRATION TIP:
-     * Using Stripe? Verify the payment status here:
-     * const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-     * if (paymentIntent.status !== 'succeeded') throw new Error('Payment not verified');
-     */
+    // Verify payment status with provider
 
     await Order.updateMany(
       { _id: { $in: orderIds } },

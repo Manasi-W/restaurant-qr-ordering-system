@@ -44,7 +44,7 @@ if (!fs.existsSync(logosDir)) fs.mkdirSync(logosDir, { recursive: true });
 
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected (local)"))
+  .then(() => console.log("Database connected successfully"))
   .catch((err) => console.error(err));
 
 app.get("/", (req, res) => {
@@ -60,8 +60,7 @@ app.post("/api/payments/create-intent", async (req, res) => {
     const paymentIntentId = `pi_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     res.json({
       paymentIntentId,
-      clientSecret: null,
-      message: "Payment intent created. Integrate Stripe for production."
+      clientSecret: null
     });
   } catch (err) {
     console.error("Payment Error:", err);

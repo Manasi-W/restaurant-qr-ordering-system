@@ -57,7 +57,7 @@ function AdminRegister() {
                   onChange={handleChange}
                   required
                   className="auth-input-pill"
-                  placeholder="marios-pizza"
+                  placeholder="jennas-kitchen"
                 />
               </div>
 
@@ -84,7 +84,7 @@ function AdminRegister() {
                   onChange={handleChange}
                   required
                   className="auth-input-pill"
-                  placeholder="john@example.com"
+                  placeholder="john.doe@gmail.com"
                 />
               </div>
 

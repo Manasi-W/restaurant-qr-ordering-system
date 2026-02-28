@@ -94,7 +94,6 @@ function Receipt() {
                 <footer className="receipt-footer">
                     <div className="receipt-thanks">THANK YOU</div>
                     <div className="receipt-barcode"></div>
-                    <div style={{ fontSize: '0.65rem', color: '#aaa' }}>designed by antigravity</div>
                 </footer>
 
                 <div className="receipt-actions">
