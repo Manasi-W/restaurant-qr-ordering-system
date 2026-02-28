@@ -13,8 +13,8 @@ dist/
 client/dist/
 
 # Uploads and temporary files
-server/uploads/*
-!server/uploads/.gitkeep
+# server/uploads/*
+# !server/uploads/.gitkeep
 temp/
 *.log
 
