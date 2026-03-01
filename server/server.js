@@ -27,7 +27,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174"],
+  origin: ["http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"],
   credentials: true
 }));
 
@@ -59,6 +59,12 @@ app.use("/api/protected", protectedRoutes);
 app.use("/portal", publicRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/payments", paymentRoutes);
+
+// Error Handler
+app.use((err, req, res, next) => {
+  console.error("Global Error Handler Catch:", err);
+  res.status(500).json({ message: "Internal Server Error", error: err.message });
+});
 
 const PORT = 5000;
 app.listen(PORT, () => {

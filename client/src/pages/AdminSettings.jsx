@@ -102,7 +102,7 @@ function AdminSettings() {
 
       alert(`${type === "admin" ? "Admin" : "User"} logo uploaded successfully!`);
     } catch (err) {
-      alert("Error uploading logo");
+      alert(`Error uploading logo: ${err.response?.data?.message || err.message}`);
     } finally {
       setSaving(false);
     }

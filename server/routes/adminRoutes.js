@@ -4,16 +4,22 @@ import jwt from "jsonwebtoken";
 import QRCode from "qrcode";
 import multer from "multer";
 import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 
 import Admin from "../models/Admin.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Multer config for logo uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/logos/");
+    const dir = path.join(__dirname, "..", "uploads", "logos");
+    cb(null, dir);
   },
   filename: (req, file, cb) => {
     cb(null, `logo-${Date.now()}-${file.originalname}`);
@@ -22,7 +28,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
@@ -33,6 +39,7 @@ const upload = multer({
     cb(new Error("Only image files are allowed"));
   }
 });
+
 /* ============================= */
 /* ADMIN REGISTER */
 /* ============================= */
