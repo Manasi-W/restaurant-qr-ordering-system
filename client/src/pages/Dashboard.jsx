@@ -12,19 +12,24 @@ import DosaImage from "../assets/dosa_icon_3d.png";
 function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [restaurantName, setRestaurantName] = useState("");
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/dashboard/stats", { withCredentials: true });
-        setStats(res.data);
+        const [statsRes, adminRes] = await Promise.all([
+          axios.get("http://localhost:5000/api/dashboard/stats", { withCredentials: true }),
+          axios.get("http://localhost:5000/api/admin/me", { withCredentials: true })
+        ]);
+        setStats(statsRes.data);
+        setRestaurantName(adminRes.data.restaurantName);
       } catch (err) {
-        console.error("Error fetching stats", err);
+        console.error("Error fetching dashboard data", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchStats();
+    fetchData();
   }, []);
 
   if (loading) {
@@ -42,7 +47,7 @@ function Dashboard() {
       <div className="admin-container">
         <header className="admin-header">
           <h1 className="admin-title">Business Overview</h1>
-          <p className="admin-subtitle">Insights and performance for your restaurant</p>
+          <p className="admin-subtitle">Insights and performance for <span style={{ color: "var(--primary)", fontWeight: "600" }}>{restaurantName || "your restaurant"}</span></p>
         </header>
 
         <div className="admin-stats-grid">
@@ -53,7 +58,7 @@ function Dashboard() {
             <div className="admin-stat-info">
               <span className="admin-stat-label">Today&apos;s Orders</span>
               <h2 className="admin-stat-value-compact">{stats?.todayOrders ?? 0}</h2>
-              <div className="admin-stat-hint">Orders Tracking Today</div>
+              <div className="admin-stat-hint">Recent Activity Today</div>
             </div>
             <div className="admin-stat-wave">
               <svg viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q 25 20 50 10 T 100 10" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.1" /></svg>
@@ -65,9 +70,9 @@ function Dashboard() {
               <CalendarChartIcon size={40} />
             </div>
             <div className="admin-stat-info">
-              <span className="admin-stat-label">Monthly Orders</span>
+              <span className="admin-stat-label">This Month&apos;s Orders</span>
               <h2 className="admin-stat-value-compact">{stats?.monthlyOrders ?? 0}</h2>
-              <div className="admin-stat-hint">Monthly Running Total</div>
+              <div className="admin-stat-hint">Running Monthly Total</div>
             </div>
             <div className="admin-stat-wave">
               <svg viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q 25 0 50 10 T 100 10" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.1" /></svg>
@@ -76,12 +81,12 @@ function Dashboard() {
 
           <div className="admin-stat-card-illustrative">
             <div className="admin-stat-icon-illustrative theme-revenue">
-              <CoinDishIcon size={40} />
+              <OrdersIcon size={40} />
             </div>
             <div className="admin-stat-info">
-              <span className="admin-stat-label">Today&apos;s Revenue</span>
-              <h2 className="admin-stat-value-compact">₹{stats?.todayRevenue?.toLocaleString() ?? 0}</h2>
-              <div className="admin-stat-hint">Total Finalized Payments</div>
+              <span className="admin-stat-label">All-Time Orders</span>
+              <h2 className="admin-stat-value-compact">{stats?.totalOrders ?? 0}</h2>
+              <div className="admin-stat-hint">Lifetime Business Volume</div>
             </div>
             <div className="admin-stat-wave">
               <svg viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q 25 10 50 10 T 100 10" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.1" /></svg>
@@ -90,12 +95,12 @@ function Dashboard() {
 
           <div className="admin-stat-card-illustrative">
             <div className="admin-stat-icon-illustrative theme-growth">
-              <GrowthIcon size={40} />
+              <RevenueIcon size={40} />
             </div>
             <div className="admin-stat-info">
-              <span className="admin-stat-label">Month-to-Month Growth</span>
+              <span className="admin-stat-label">This Month&apos;s Revenue</span>
               <h2 className="admin-stat-value-compact">₹{stats?.totalMonthlyRevenue?.toLocaleString() ?? 0}</h2>
-              <div className="admin-stat-hint">Monthly Performance</div>
+              <div className="admin-stat-hint">Monthly Financial Output</div>
             </div>
             <div className="admin-stat-wave">
               <svg viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q 25 20 50 10 T 100 10" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.1" /></svg>
@@ -107,6 +112,7 @@ function Dashboard() {
           <div className="admin-items-horizontal-section">
             <div className="admin-section-head">
               <h3 className="admin-card-title">Top Ranked Items</h3>
+              <span className="admin-section-badge">All-Time Statistics</span>
             </div>
             <div className="admin-food-list-vertical">
               {stats?.topSellingItems?.map((item, index) => (

@@ -161,27 +161,34 @@ function AdminMenu() {
         </form>
 
         <h2 className="admin-card-title" style={{ marginBottom: "1.25rem" }}>Current Menu</h2>
-        <div className="admin-menu-grid">
-          {menu.map((item) => (
-            <div key={item._id} className="admin-menu-card">
-              {item.imageUrl && (
-                <img src={`http://localhost:5000${item.imageUrl}`} alt={item.name} className="admin-menu-card-image" />
-              )}
-              <div className="admin-menu-card-body">
-                <div className="admin-menu-card-header">
-                  <h3 className="admin-menu-card-name">{item.name}</h3>
-                  <span className="admin-menu-card-price">₹{item.price}</span>
-                </div>
-                <span className="admin-menu-card-category">{item.category}</span>
-                <p className="admin-menu-card-desc">{item.description}</p>
-                <div className="admin-menu-card-actions">
-                  <button type="button" onClick={() => handleEdit(item)} className="admin-btn admin-btn-ghost">Edit</button>
-                  <button type="button" onClick={() => handleDelete(item._id)} className="admin-btn admin-btn-danger">Delete</button>
+        {menu.length === 0 ? (
+          <div className="admin-empty" style={{ padding: "3rem", background: "white", borderRadius: "1rem", border: "1px dashed #ccc" }}>
+            <p style={{ fontSize: "1.1rem", color: "#666" }}>Your menu is currently empty.</p>
+            <p style={{ fontSize: "0.9rem", color: "#999", marginTop: "0.5rem" }}>Use the form above to add your first dish and it will appear here.</p>
+          </div>
+        ) : (
+          <div className="admin-menu-grid">
+            {menu.map((item) => (
+              <div key={item._id} className="admin-menu-card">
+                {item.imageUrl && (
+                  <img src={`http://localhost:5000${item.imageUrl}`} alt={item.name} className="admin-menu-card-image" />
+                )}
+                <div className="admin-menu-card-body">
+                  <div className="admin-menu-card-header">
+                    <h3 className="admin-menu-card-name">{item.name}</h3>
+                    <span className="admin-menu-card-price">₹{item.price}</span>
+                  </div>
+                  <span className="admin-menu-card-category">{item.category}</span>
+                  <p className="admin-menu-card-desc">{item.description}</p>
+                  <div className="admin-menu-card-actions">
+                    <button type="button" onClick={() => handleEdit(item)} className="admin-btn admin-btn-ghost">Edit</button>
+                    <button type="button" onClick={() => handleDelete(item._id)} className="admin-btn admin-btn-danger">Delete</button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

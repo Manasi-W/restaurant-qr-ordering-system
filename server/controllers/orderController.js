@@ -100,3 +100,16 @@ export const getOrders = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getOrdersByIds = async (req, res) => {
+  try {
+    const { ids } = req.query;
+    if (!ids) return res.status(400).json({ message: "No IDs provided" });
+
+    const idArray = ids.split(",");
+    const orders = await Order.find({ _id: { $in: idArray } });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};

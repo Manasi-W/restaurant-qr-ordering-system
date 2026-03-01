@@ -11,7 +11,38 @@ function AdminOrders() {
   const fetchOrders = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/orders", { withCredentials: true });
-      setOrders(res.data);
+
+      // Grouping orders by table and status/time window
+      const rawOrders = res.data;
+      const grouped = rawOrders.reduce((acc, order) => {
+        const timestamp = new Date(order.updatedAt).toLocaleDateString() + " " + new Date(order.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        // Create a unique key for grouping: table + status + (if Paid, the rounded timestamp)
+        const key = `${order.table}_${order.status}_${order.status === "Paid" ? timestamp : "active"}`;
+
+        if (!acc[key]) {
+          acc[key] = {
+            _id: order._id, // Use the latest ID as reference
+            table: order.table,
+            status: order.status,
+            createdAt: order.createdAt,
+            updatedAt: order.updatedAt,
+            items: [...order.items],
+            totalAmount: order.totalAmount,
+            orderIds: [order._id]
+          };
+        } else {
+          acc[key].items.push(...order.items);
+          acc[key].totalAmount += order.totalAmount;
+          acc[key].orderIds.push(order._id);
+          // Keep the latest timestamp for sorting
+          if (new Date(order.createdAt) > new Date(acc[key].createdAt)) {
+            acc[key].createdAt = order.createdAt;
+          }
+        }
+        return acc;
+      }, {});
+
+      setOrders(Object.values(grouped).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
     } catch (err) {
       console.error(err.response?.data || err.message);
     } finally {
@@ -25,9 +56,11 @@ function AdminOrders() {
     return () => clearInterval(interval);
   }, []);
 
-  const updateStatus = async (id, status) => {
+  const updateStatus = async (group, status) => {
     try {
-      await axios.put(`http://localhost:5000/api/orders/${id}/status`, { status }, { withCredentials: true });
+      await Promise.all(group.orderIds.map(id =>
+        axios.put(`http://localhost:5000/api/orders/${id}/status`, { status }, { withCredentials: true })
+      ));
       fetchOrders();
     } catch (err) {
       alert("Failed to update status");
@@ -64,7 +97,14 @@ function AdminOrders() {
         </header>
 
         {orders.length === 0 && (
-          <div className="admin-empty">No orders found yet.</div>
+          <div className="admin-empty" style={{ padding: "4rem", background: "white", borderRadius: "1.5rem", border: "1px dashed #ccc", textAlign: "center" }}>
+            <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>📋</div>
+            <h3 style={{ color: "var(--text-dark)", marginBottom: "0.5rem" }}>No Orders Yet</h3>
+            <p style={{ color: "var(--text-muted)", maxWidth: "400px", margin: "0 auto" }}>
+              Incoming orders from your customers will appear here in real-time.
+              Make sure your tables have QR codes generated!
+            </p>
+          </div>
         )}
 
         <div className="admin-orders-grid">
@@ -117,17 +157,17 @@ function AdminOrders() {
 
                   <div className="admin-order-actions-row">
                     {order.status === "Pending" && (
-                      <button type="button" onClick={() => updateStatus(order._id, "Cooking")} className="admin-btn-action start">
+                      <button type="button" onClick={() => updateStatus(order, "Cooking")} className="admin-btn-action start">
                         Start Preparation
                       </button>
                     )}
                     {order.status === "Cooking" && (
-                      <button type="button" onClick={() => updateStatus(order._id, "Served")} className="admin-btn-action success">
+                      <button type="button" onClick={() => updateStatus(order, "Served")} className="admin-btn-action success">
                         Mark as Ready/Served
                       </button>
                     )}
                     {order.status === "Served" && (
-                      <button type="button" onClick={() => updateStatus(order._id, "Paid")} className="admin-btn-action finish">
+                      <button type="button" onClick={() => updateStatus(order, "Paid")} className="admin-btn-action finish">
                         Complete Order
                       </button>
                     )}

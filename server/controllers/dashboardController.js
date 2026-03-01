@@ -10,18 +10,43 @@ export const getDashboardStats = async (req, res) => {
 
     // Filter by restaurant
     const query = { restaurant: restaurantName };
+    console.log(`[Dashboard] Querying for: "${restaurantName}"`);
 
-    // Daily orders count
-    const todayOrders = await Order.countDocuments({
+    // Helper for visit-based aggregation
+    const visitAggregation = (matchQuery) => [
+      { $match: matchQuery },
+      {
+        $group: {
+          _id: {
+            table: "$table",
+            // Group by status. If Paid, also group by updatedAt to catch the same "checkout" batch.
+            // Using a 1-minute window for Paid orders to catch multi-order checkouts that might have slight millisecond differences if not using updateMany
+            session: {
+              $cond: [
+                { $eq: ["$status", "Paid"] },
+                { $dateToString: { format: "%Y-%m-%d %H:%M", date: "$updatedAt" } },
+                "active"
+              ]
+            }
+          }
+        }
+      },
+      { $count: "count" }
+    ];
+
+    // Daily visits count
+    const todayResult = await Order.aggregate(visitAggregation({
       ...query,
       createdAt: { $gte: startOfDay }
-    });
+    }));
+    const todayOrders = todayResult[0]?.count || 0;
 
-    // Monthly orders count
-    const monthlyOrders = await Order.countDocuments({
+    // Monthly visits count
+    const monthlyResult = await Order.aggregate(visitAggregation({
       ...query,
       createdAt: { $gte: startOfMonth }
-    });
+    }));
+    const monthlyOrders = monthlyResult[0]?.count || 0;
 
     // Revenue Tracking
     const revenueStats = await Order.aggregate([
@@ -54,13 +79,22 @@ export const getDashboardStats = async (req, res) => {
       { $limit: 5 }
     ]);
 
-    res.json({
+    // Total visits count (all-time)
+    const totalResult = await Order.aggregate(visitAggregation(query));
+    const totalOrders = totalResult[0]?.count || 0;
+    console.log(`[Dashboard] Total Visits for "${restaurantName}": ${totalOrders}`);
+
+    const stats = {
       todayOrders,
       monthlyOrders,
+      totalOrders,
       totalMonthlyRevenue: revenueStats[0]?.totalRevenue || 0,
+      monthlyRevenue: revenueStats[0]?.totalRevenue || 0,
       todayRevenue: revenueStats[0]?.todayRevenue || 0,
       topSellingItems: topItems
-    });
+    };
+
+    res.json(stats);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }

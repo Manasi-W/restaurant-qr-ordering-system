@@ -52,29 +52,12 @@ app.get("/", (req, res) => {
 });
 
 // ROUTES
-
-// Payment create-intent (inline to ensure it's always available)
-app.post("/api/payments/create-intent", async (req, res) => {
-  try {
-    const { amount, restaurant, table, orders } = req.body;
-    const paymentIntentId = `pi_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    res.json({
-      paymentIntentId,
-      clientSecret: null
-    });
-  } catch (err) {
-    console.error("Payment Error:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
 app.use("/api/admin", adminRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/protected", protectedRoutes);
 app.use("/portal", publicRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-
 app.use("/api/payments", paymentRoutes);
 
 const PORT = 5000;

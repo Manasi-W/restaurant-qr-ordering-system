@@ -6,19 +6,21 @@ import "../styles/Admin.css";
 function AdminNavbar() {
   const navigate = useNavigate();
   const [adminLogo, setAdminLogo] = useState(null);
+  const [restaurantName, setRestaurantName] = useState("");
 
   useEffect(() => {
-    const fetchAdminLogo = async () => {
+    const fetchAdminData = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/admin/me", { withCredentials: true });
         if (res.data.adminLogoUrl) {
           setAdminLogo(`http://localhost:5000${res.data.adminLogoUrl}`);
         }
+        setRestaurantName(res.data.restaurantName || "");
       } catch (err) {
-        console.error("Error fetching admin logo", err);
+        console.error("Error fetching admin data", err);
       }
     };
-    fetchAdminLogo();
+    fetchAdminData();
   }, []);
 
   const handleLogout = async () => {
@@ -37,9 +39,16 @@ function AdminNavbar() {
         {adminLogo && (
           <img src={adminLogo} alt="Logo" style={{ height: "40px", objectFit: "contain" }} />
         )}
-        <h2 className="admin-navbar-logo">
-          Dine<span className="admin-navbar-logo-accent">Dash</span> Admin
-        </h2>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <h2 className="admin-navbar-logo" style={{ marginBottom: 0 }}>
+            Dine<span className="admin-navbar-logo-accent">Dash</span> Admin
+          </h2>
+          {restaurantName && (
+            <span style={{ fontSize: "0.75rem", color: "var(--primary)", fontWeight: "600", marginTop: "-2px" }}>
+              {restaurantName}
+            </span>
+          )}
+        </div>
       </div>
       <div className="admin-navbar-links">
         <NavLink to="/admin/dashboard" className={({ isActive }) => "admin-navbar-link" + (isActive ? " active" : "")}>

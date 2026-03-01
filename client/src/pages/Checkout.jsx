@@ -137,32 +137,29 @@ function Checkout() {
                 No orders placed yet in this session.
               </p>
             ) : (
-              activeOrders.map((order, idx) => (
-                <div
-                  key={order._id}
-                  className="public-order-block"
-                  style={{ borderBottom: idx === activeOrders.length - 1 ? "none" : "1px dashed var(--gray-200)" }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-                    <span className="public-order-id">Order #{order._id.slice(-4)}</span>
-                    <span
-                      className="public-status-badge"
-                      style={{
-                        background: order.status === "Served" ? "#dcfce7" : "#fef9c3",
-                        color: order.status === "Served" ? "#166534" : "#854d0e"
-                      }}
-                    >
-                      {order.status}
-                    </span>
+              (() => {
+                const allSubItems = activeOrders.flatMap(o => o.items);
+                const groupedSubItems = allSubItems.reduce((acc, item) => {
+                  const existing = acc.find(i => i.name === item.name && i.price === item.price);
+                  if (existing) {
+                    existing.quantity += item.quantity;
+                  } else {
+                    acc.push({ ...item });
+                  }
+                  return acc;
+                }, []);
+
+                return (
+                  <div className="public-order-block" style={{ borderBottom: "none" }}>
+                    {groupedSubItems.map((item, i) => (
+                      <div key={i} className="public-order-mini-row">
+                        <span>{item.name} x {item.quantity}</span>
+                        <span>₹{item.price * item.quantity}</span>
+                      </div>
+                    ))}
                   </div>
-                  {order.items.map((item, i) => (
-                    <div key={i} className="public-order-mini-row">
-                      <span>{item.name} x {item.quantity}</span>
-                      <span>₹{item.price * item.quantity}</span>
-                    </div>
-                  ))}
-                </div>
-              ))
+                );
+              })()
             )}
             <div className="public-grand-total-row">
               <span>Grand Total</span>

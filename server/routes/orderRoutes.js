@@ -1,10 +1,11 @@
 import express from "express";
-import { createOrder, getOrders, getActiveOrders, updateOrderStatus } from "../controllers/orderController.js";
+import { createOrder, getOrders, getActiveOrders, updateOrderStatus, getOrdersByIds } from "../controllers/orderController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 /* PUBLIC — place order */
+router.get("/by-ids", getOrdersByIds);
 router.post("/", createOrder);
 router.get("/active/:restaurant/:table", getActiveOrders);
 

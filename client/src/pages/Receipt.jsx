@@ -29,9 +29,8 @@ function Receipt() {
 
                 // Search for the orders if they were passed
                 if (orderIds.length > 0) {
-                    const resOrders = await axios.get(`http://localhost:5000/api/orders/active/${restaurantURL}/${tableId}`);
-                    // Filter only orders that were just paid (if possible) - or just show all active/recent
-                    setOrders(resOrders.data.filter(o => orderIds.includes(o._id)));
+                    const resOrders = await axios.get(`http://localhost:5000/api/orders/by-ids?ids=${orderIds.join(",")}`);
+                    setOrders(resOrders.data);
                 }
             } catch (err) {
                 console.error("Error fetching receipt data", err);
@@ -44,7 +43,17 @@ function Receipt() {
 
     if (loading) return <div className="receipt-page"><div className="spinner"></div></div>;
 
-    const allItems = orders.flatMap(o => o.items);
+    const allItemsRaw = orders.flatMap(o => o.items);
+    const consolidatedItems = allItemsRaw.reduce((acc, item) => {
+        const existing = acc.find(i => i.name === item.name && i.price === item.price);
+        if (existing) {
+            existing.quantity += item.quantity;
+        } else {
+            acc.push({ ...item });
+        }
+        return acc;
+    }, []);
+
     const date = new Date().toLocaleDateString();
     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -69,7 +78,7 @@ function Receipt() {
                 <div className="receipt-divider"></div>
 
                 <div className="receipt-items">
-                    {allItems.map((item, idx) => (
+                    {consolidatedItems.map((item, idx) => (
                         <div key={idx} className="receipt-item-row">
                             <div className="receipt-item-name">
                                 <span className="receipt-item-qty">{item.quantity}x</span>
@@ -83,7 +92,7 @@ function Receipt() {
                 <div className="receipt-totals">
                     <div className="receipt-total-row">
                         <span>TOTAL AMOUNT</span>
-                        <span>₹{amount || allItems.reduce((s, i) => s + i.price * i.quantity, 0)}</span>
+                        <span>₹{amount || consolidatedItems.reduce((s, i) => s + i.price * i.quantity, 0)}</span>
                     </div>
                     <div className="receipt-info" style={{ marginTop: '0.5rem' }}>
                         <span>PAYMENT STATUS</span>
