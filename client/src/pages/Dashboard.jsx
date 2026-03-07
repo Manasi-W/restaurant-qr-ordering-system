@@ -3,16 +3,28 @@ import { Link } from "react-router-dom";
 import api from "../api/axios";
 import AdminNavbar from "../components/AdminNavbar";
 import "../styles/Admin.css";
-import { OrdersIcon, RevenueIcon, DishIcon, CartIcon, QRCodeIcon, ForkKnifeIcon, ArrowUpRightIcon, ClocheIcon, CalendarChartIcon, CoinDishIcon, GrowthIcon, ClipboardCheckIcon, ServerChefIcon, RibbonBadgeIcon, SettingsProfileIcon } from "../components/ThemeIcons";
+import { OrdersIcon, RevenueIcon, DishIcon, CartIcon, QRCodeIcon, ForkKnifeIcon, ArrowUpRightIcon, ClocheIcon, CalendarChartIcon, CoinDishIcon, GrowthIcon, ClipboardCheckIcon, ServerChefIcon, RibbonBadgeIcon, SettingsProfileIcon, LogoutIcon } from "../components/ThemeIcons";
 import PizzaImage from "../assets/pizza_slice_3d.png";
 import BiryaniImage from "../assets/biryani_icon_3d.png";
 import FriesImage from "../assets/fries_icon_3d.png";
 import DosaImage from "../assets/dosa_icon_3d.png";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [restaurantName, setRestaurantName] = useState("");
+
+  const handleLogout = async () => {
+    try {
+      await api.post("/api/admin/logout", {});
+      navigate("/admin/login");
+    } catch (err) {
+      console.error("Logout failed", err);
+      navigate("/admin/login");
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -166,16 +178,16 @@ function Dashboard() {
               </Link>
               <Link to="/admin/orders" className="admin-action-box bg-light-green">
                 <ClipboardCheckIcon size={44} color="black" />
-                <div className="admin-action-label">View Incoming Orders</div>
+                <div className="admin-action-label">View Orders</div>
               </Link>
               <Link to="/admin/menu" className="admin-action-box bg-cream">
                 <ServerChefIcon size={44} color="black" />
-                <div className="admin-action-label">Update Menu List</div>
+                <div className="admin-action-label">Update Menu</div>
               </Link>
-              <Link to="/admin/profile" className="admin-action-box bg-grey">
-                <SettingsProfileIcon size={44} />
-                <div className="admin-action-label">Settings & Profile</div>
-              </Link>
+              <button onClick={handleLogout} className="admin-action-box bg-red-soft" style={{ width: '100%', border: 'none', cursor: 'pointer' }}>
+                <LogoutIcon size={44} color="#b91c1c" />
+                <div className="admin-action-label" style={{ color: '#b91c1c' }}>Sign Out</div>
+              </button>
             </div>
           </div>
         </div>
