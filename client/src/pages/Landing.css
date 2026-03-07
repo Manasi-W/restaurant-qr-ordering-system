@@ -414,6 +414,13 @@ body {
   transform: translateY(-5px);
 }
 
+@media (max-width: 768px) {
+  .featured-img {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
 .featured-text {
   flex: 1;
 }
@@ -737,10 +744,15 @@ body {
 /* Mobile Responsive */
 @media (max-width: 1024px) {
 
-  .hero,
+  .hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 3rem;
+  }
+
   .featured-dish,
   .mobile-app {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     text-align: center;
     gap: 3rem;
   }
@@ -763,6 +775,11 @@ body {
 
   .featured-img-container {
     order: -1;
+    width: 100%;
+  }
+
+  .featured-text {
+    width: 100%;
   }
 
   .app-mockup {
