@@ -79,6 +79,11 @@ export const loginAdmin = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    if (!process.env.JWT_SECRET) {
+      console.error("JWT_SECRET is not defined in environment variables");
+      return res.status(500).json({ message: "Server configuration error: JWT_SECRET missing" });
+    }
+
     const token = jwt.sign(
       { id: admin._id },
       process.env.JWT_SECRET,
@@ -105,6 +110,6 @@ export const loginAdmin = async (req, res) => {
     });
   } catch (error) {
     console.error("Login Error:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: error.message });
   }
 };
