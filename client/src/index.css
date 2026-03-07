@@ -70,8 +70,8 @@
   --radius-journal: 32px;
 
   /* Typography */
-  --font-body: 'Inter', -apple-system, sans-serif;
-  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Outfit', 'Playfair Display', system-ui, -apple-system, sans-serif;
 
   /* Transitions */
   --transition-fast: 150ms ease;
