@@ -8,8 +8,13 @@ function Checkout() {
   const navigate = useNavigate();
 
   const [cart, setCart] = useState(() => {
-    const saved = localStorage.getItem(`cart_${restaurantURL}_${tableId}`);
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem(`cart_${restaurantURL}_${tableId}`);
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      console.error("Cart parse error", e);
+      return [];
+    }
   });
   const [activeOrders, setActiveOrders] = useState([]);
   const [loading, setLoading] = useState(true);

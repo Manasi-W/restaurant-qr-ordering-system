@@ -186,7 +186,8 @@ router.post("/tables", authMiddleware, async (req, res) => {
 
     for (let i = 1; i <= tables; i++) {
       const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
-      const url = `${frontendUrl}/portal/${admin.restaurantName}/${i}`;
+      const encodedName = encodeURIComponent(admin.restaurantName);
+      const url = `${frontendUrl}/portal/${encodedName}/${i}`;
       const qr = await QRCode.toDataURL(url);
 
       qrCodes.push({

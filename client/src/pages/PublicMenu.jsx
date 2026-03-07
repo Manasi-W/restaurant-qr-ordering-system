@@ -14,8 +14,13 @@ function PublicMenu() {
   const [themeColors, setThemeColors] = useState(null);
   const [userLogoUrl, setUserLogoUrl] = useState(null);
   const [cart, setCart] = useState(() => {
-    const saved = localStorage.getItem(`cart_${restaurantURL}_${tableId}`);
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem(`cart_${restaurantURL}_${tableId}`);
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      console.error("Cart parse error", e);
+      return [];
+    }
   });
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
