@@ -62,7 +62,7 @@ function AdminTables() {
 
         <div className="admin-card" style={{ maxWidth: "500px", marginBottom: "2.5rem" }}>
           <h2 className="admin-card-title">Set Table Count</h2>
-          <form onSubmit={(e) => handleGenerate(e)} style={{ display: "flex", gap: "1rem" }}>
+          <form onSubmit={(e) => handleGenerate(e)} className="admin-table-form">
             <input
               type="number"
               value={tableCount || ""}
@@ -70,7 +70,6 @@ function AdminTables() {
               placeholder="Number of tables (e.g. 10)"
               className="admin-input"
               min={1}
-              style={{ flex: 1 }}
             />
             <button type="submit" disabled={loading} className="admin-btn admin-btn-primary">
               {loading ? "Generating..." : "Generate & Save QR Codes"}
