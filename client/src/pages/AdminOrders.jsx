@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import AdminNavbar from "../components/AdminNavbar";
 import "../styles/Admin.css";
 import { TableIcon } from "../components/ThemeIcons";
@@ -10,7 +10,7 @@ function AdminOrders() {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/orders", { withCredentials: true });
+      const res = await api.get("/api/orders");
 
       // Grouping orders by table and status/time window
       const rawOrders = res.data;
@@ -59,7 +59,7 @@ function AdminOrders() {
   const updateStatus = async (group, status) => {
     try {
       await Promise.all(group.orderIds.map(id =>
-        axios.put(`http://localhost:5000/api/orders/${id}/status`, { status }, { withCredentials: true })
+        api.put(`/api/orders/${id}/status`, { status })
       ));
       fetchOrders();
     } catch (err) {

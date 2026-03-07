@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "../styles/Public.css";
 
@@ -24,10 +24,9 @@ function Payment() {
     setLoading(true);
     setError("");
     try {
-      await axios.post(
-        "http://localhost:5000/api/payments/verify",
-        { paymentIntentId, orderIds },
-        { withCredentials: true }
+      await api.post(
+        "/api/payments/verify",
+        { paymentIntentId, orderIds }
       );
       navigate(`/payment-success/${restaurantURL}/${tableId}`, {
         state: { amount: amountInRupees, orderIds },

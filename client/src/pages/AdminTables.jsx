@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import AdminNavbar from "../components/AdminNavbar";
 import "../styles/Admin.css";
 
@@ -10,7 +10,7 @@ function AdminTables() {
 
   const fetchCurrentTables = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/me", { withCredentials: true });
+      const res = await api.get("/api/admin/me");
       if (res.data.tables) {
         setTableCount(res.data.tables);
         handleGenerate(null, res.data.tables);
@@ -29,10 +29,9 @@ function AdminTables() {
     setLoading(true);
     try {
       const count = countOverride ?? tableCount;
-      const res = await axios.post(
-        "http://localhost:5000/api/admin/tables",
-        { tables: count },
-        { withCredentials: true }
+      const res = await api.post(
+        "/api/admin/tables",
+        { tables: count }
       );
       setQrCodes(res.data.qrCodes);
       alert(res.data.message);

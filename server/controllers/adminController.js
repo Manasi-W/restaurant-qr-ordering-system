@@ -24,9 +24,14 @@ export const registerAdmin = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const existingAdmin = await Admin.findOne({ email });
-    if (existingAdmin) {
-      return res.status(400).json({ message: "Admin already exists" });
+    const existingEmail = await Admin.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    const existingRestaurant = await Admin.findOne({ restaurantName });
+    if (existingRestaurant) {
+      return res.status(400).json({ message: "Restaurant name already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -45,7 +50,13 @@ export const registerAdmin = async (req, res) => {
       adminId: admin._id,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Registration Error:", error);
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({
+        message: `${field.charAt(0).toUpperCase() + field.slice(1)} already exists`
+      });
+    }
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -74,6 +85,14 @@ export const loginAdmin = async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    // Set HTTP-only cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
     res.json({
       message: "Login successful",
       token,
@@ -85,7 +104,7 @@ export const loginAdmin = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Login Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

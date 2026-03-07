@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axios";
 import "../styles/Receipt.css";
 
 function Receipt() {
@@ -17,7 +17,7 @@ function Receipt() {
         const fetchData = async () => {
             try {
                 // Fetch restaurant info for theme and branding
-                const resSettings = await axios.get(`http://localhost:5000/portal/${restaurantURL}/${tableId}`);
+                const resSettings = await api.get(`/portal/${restaurantURL}/${tableId}`);
                 setRestaurantInfo(resSettings.data);
 
                 // Apply theme colors
@@ -29,7 +29,7 @@ function Receipt() {
 
                 // Search for the orders if they were passed
                 if (orderIds.length > 0) {
-                    const resOrders = await axios.get(`http://localhost:5000/api/orders/by-ids?ids=${orderIds.join(",")}`);
+                    const resOrders = await api.get(`/api/orders/by-ids?ids=${orderIds.join(",")}`);
                     setOrders(resOrders.data);
                 }
             } catch (err) {

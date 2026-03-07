@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import AdminNavbar from "../components/AdminNavbar";
 import "../styles/Admin.css";
 
@@ -19,15 +19,15 @@ function AdminSettings() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/admin/me", { withCredentials: true });
+        const res = await api.get("/api/admin/me");
         if (res.data.themeColors) {
           setThemeColors(res.data.themeColors);
         }
         if (res.data.adminLogoUrl) {
-          setAdminLogoPreview(`http://localhost:5000${res.data.adminLogoUrl}`);
+          setAdminLogoPreview(`${api.defaults.baseURL}${res.data.adminLogoUrl}`);
         }
         if (res.data.userLogoUrl) {
-          setUserLogoPreview(`http://localhost:5000${res.data.userLogoUrl}`);
+          setUserLogoPreview(`${api.defaults.baseURL}${res.data.userLogoUrl}`);
         }
       } catch (err) {
         console.error("Error fetching settings", err);
@@ -45,7 +45,7 @@ function AdminSettings() {
   const handleThemeSave = async () => {
     setSaving(true);
     try {
-      await axios.put("http://localhost:5000/api/admin/theme", themeColors, { withCredentials: true });
+      await api.put("/api/admin/theme", themeColors);
       alert("Theme colors saved! Changes will apply to your customer menu.");
       // Apply theme immediately to current page
       document.documentElement.style.setProperty("--primary", themeColors.primary);
@@ -87,17 +87,16 @@ function AdminSettings() {
       formData.append("logo", file);
       formData.append("type", type);
 
-      const res = await axios.post("http://localhost:5000/api/admin/logo/upload", formData, {
-        withCredentials: true,
+      const res = await api.post("/api/admin/logo/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" }
       });
 
       if (type === "admin") {
         setAdminLogo(null);
-        setAdminLogoPreview(`http://localhost:5000${res.data.logoUrl}`);
+        setAdminLogoPreview(`${api.defaults.baseURL}${res.data.logoUrl}`);
       } else {
         setUserLogo(null);
-        setUserLogoPreview(`http://localhost:5000${res.data.logoUrl}`);
+        setUserLogoPreview(`${api.defaults.baseURL}${res.data.logoUrl}`);
       }
 
       alert(`${type === "admin" ? "Admin" : "User"} logo uploaded successfully!`);

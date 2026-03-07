@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { useParams, useNavigate } from "react-router-dom";
 import "../styles/Public.css";
 import { CartIcon } from "../components/ThemeIcons";
@@ -23,7 +23,7 @@ function PublicMenu() {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/portal/${restaurantURL}/${tableId}`);
+        const res = await api.get(`/portal/${restaurantURL}/${tableId}`);
         setMenu(res.data.menu);
         setFilteredMenu(res.data.menu);
         setRestaurantInfo({
@@ -41,7 +41,7 @@ function PublicMenu() {
         }
 
         if (res.data.userLogoUrl) {
-          setUserLogoUrl(`http://localhost:5000${res.data.userLogoUrl}`);
+          setUserLogoUrl(`${api.defaults.baseURL}${res.data.userLogoUrl}`);
         }
       } catch (err) {
         console.error("Error fetching menu", err);
@@ -140,7 +140,7 @@ function PublicMenu() {
               style={{ animationDelay: `${index * 0.05}s` }}
             >
               {item.imageUrl && (
-                <img src={`http://localhost:5000${item.imageUrl}`} alt={item.name} className="public-item-image" />
+                <img src={`${api.defaults.baseURL}${item.imageUrl}`} alt={item.name} className="public-item-image" />
               )}
               <div className="public-item-body">
                 <div className="public-item-header">

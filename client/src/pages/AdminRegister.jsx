@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/Auth.css";
 
@@ -22,7 +22,7 @@ function AdminRegister() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/admin/register", formData, { withCredentials: true });
+      const res = await api.post("/api/admin/register", formData);
       alert(res.data.message || "Registration successful");
       navigate("/admin/login");
     } catch (err) {

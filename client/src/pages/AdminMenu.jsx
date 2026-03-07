@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import AdminNavbar from "../components/AdminNavbar";
 import "../styles/Admin.css";
 
@@ -16,7 +16,7 @@ function AdminMenu() {
 
   const fetchMenu = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/menu", { withCredentials: true });
+      const res = await api.get("/api/menu");
       setMenu(res.data);
     } catch (err) {
       console.error(err.response?.data || err.message);
@@ -47,10 +47,10 @@ function AdminMenu() {
 
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/menu/${editingId}`, data, { withCredentials: true });
+        await api.put(`/api/menu/${editingId}`, data);
         alert("Item updated!");
       } else {
-        await axios.post("http://localhost:5000/api/menu", data, { withCredentials: true });
+        await api.post("/api/menu", data);
         alert("Item added!");
       }
       setFormData({ name: "", price: "", category: "General", description: "", image: null });
@@ -78,7 +78,7 @@ function AdminMenu() {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this item?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/menu/${id}`, { withCredentials: true });
+      await api.delete(`/api/menu/${id}`);
       fetchMenu();
     } catch (err) {
       alert("Error deleting item");
@@ -171,7 +171,7 @@ function AdminMenu() {
             {menu.map((item) => (
               <div key={item._id} className="admin-menu-card">
                 {item.imageUrl && (
-                  <img src={`http://localhost:5000${item.imageUrl}`} alt={item.name} className="admin-menu-card-image" />
+                  <img src={`${api.defaults.baseURL}${item.imageUrl}`} alt={item.name} className="admin-menu-card-image" />
                 )}
                 <div className="admin-menu-card-body">
                   <div className="admin-menu-card-header">

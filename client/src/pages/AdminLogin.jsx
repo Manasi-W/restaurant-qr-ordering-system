@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/Auth.css";
 
@@ -12,10 +12,9 @@ function AdminLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
-        "http://localhost:5000/api/admin/login",
-        { email, password },
-        { withCredentials: true }
+      await api.post(
+        "/api/admin/login",
+        { email, password }
       );
       alert("Login successful");
       navigate("/admin/dashboard");

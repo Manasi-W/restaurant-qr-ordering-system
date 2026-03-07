@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import AdminNavbar from "../components/AdminNavbar";
 import "../styles/Admin.css";
 
@@ -17,7 +17,7 @@ function AdminProfile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/admin/me", { withCredentials: true });
+        const res = await api.get("/api/admin/me");
         setProfile({ ...res.data, password: "" });
       } catch (err) {
         console.error("Error fetching profile", err);
@@ -35,7 +35,7 @@ function AdminProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put("http://localhost:5000/api/admin/profile", profile, { withCredentials: true });
+      await api.put("/api/admin/profile", profile);
       alert("Profile updated successfully!");
     } catch (err) {
       alert("Error updating profile");

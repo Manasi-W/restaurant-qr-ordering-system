@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axios";
 import AdminNavbar from "../components/AdminNavbar";
 import "../styles/Admin.css";
 import { OrdersIcon, RevenueIcon, DishIcon, CartIcon, QRCodeIcon, ForkKnifeIcon, ArrowUpRightIcon, ClocheIcon, CalendarChartIcon, CoinDishIcon, GrowthIcon, ClipboardCheckIcon, ServerChefIcon, RibbonBadgeIcon, SettingsProfileIcon } from "../components/ThemeIcons";
@@ -18,8 +18,8 @@ function Dashboard() {
     const fetchData = async () => {
       try {
         const [statsRes, adminRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/dashboard/stats", { withCredentials: true }),
-          axios.get("http://localhost:5000/api/admin/me", { withCredentials: true })
+          api.get("/api/dashboard/stats"),
+          api.get("/api/admin/me")
         ]);
         setStats(statsRes.data);
         setRestaurantName(adminRes.data.restaurantName);

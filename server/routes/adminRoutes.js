@@ -40,89 +40,21 @@ const upload = multer({
   }
 });
 
+import { registerAdmin, loginAdmin } from "../controllers/adminController.js";
+
+// ... existing storage and upload config ...
+
 /* ============================= */
 /* ADMIN REGISTER */
 /* ============================= */
 
-router.post("/register", async (req, res) => {
-  try {
-    const { adminName, restaurantName, email, phone, address, password } = req.body;
-
-    const existing = await Admin.findOne({ email });
-    if (existing) {
-      return res.status(400).json({ message: "Admin already exists" });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const admin = new Admin({
-      adminName,
-      restaurantName,
-      email,
-      phone,
-      address,
-      password: hashedPassword
-    });
-
-    await admin.save();
-
-    res.json({
-      message: "Admin registered successfully"
-    });
-
-  } catch (error) {
-    console.error("Registration Error:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+router.post("/register", registerAdmin);
 
 /* ============================= */
 /* ADMIN LOGIN */
 /* ============================= */
 
-router.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const admin = await Admin.findOne({ email });
-    if (!admin) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-    const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-    const token = jwt.sign(
-      { id: admin._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
-
-    // Set HTTP-only cookie
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // only works on https
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-    });
-
-    res.json({
-      message: "Login successful",
-      admin: {
-        id: admin._id,
-        adminName: admin.adminName,
-        restaurantName: admin.restaurantName,
-        email: admin.email
-      }
-    });
-
-  } catch (error) {
-    console.error("Login Error:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+router.post("/login", loginAdmin);
 
 /* ============================= */
 /* ADMIN LOGOUT */

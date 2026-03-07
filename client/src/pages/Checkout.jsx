@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { useParams, useNavigate } from "react-router-dom";
 import "../styles/Public.css";
 
@@ -39,7 +39,7 @@ function Checkout() {
 
   const fetchActiveOrders = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/orders/active/${restaurantURL}/${tableId}`);
+      const res = await api.get(`/api/orders/active/${restaurantURL}/${tableId}`);
       setActiveOrders(res.data);
     } catch (err) {
       console.error("Error fetching active orders", err);
@@ -51,7 +51,7 @@ function Checkout() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/portal/${restaurantURL}/${tableId}`);
+        const res = await api.get(`/portal/${restaurantURL}/${tableId}`);
         // Apply theme colors
         if (res.data.themeColors) {
           document.documentElement.style.setProperty("--primary", res.data.themeColors.primary);
@@ -72,7 +72,7 @@ function Checkout() {
   const handlePlaceOrder = async () => {
     if (cart.length === 0) return;
     try {
-      await axios.post("http://localhost:5000/api/orders", {
+      await api.post("/api/orders", {
         restaurant: restaurantURL,
         table: tableId,
         items: cart,
@@ -175,7 +175,7 @@ function Checkout() {
             onClick={async () => {
               try {
                 // Create payment intent
-                const res = await axios.post("http://localhost:5000/api/payments/create-intent", {
+                const res = await api.post("/api/payments/create-intent", {
                   amount: totalActive * 100, // Convert to paise
                   restaurant: restaurantURL,
                   table: tableId,
