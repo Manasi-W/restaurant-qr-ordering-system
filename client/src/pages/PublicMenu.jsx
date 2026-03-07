@@ -24,6 +24,8 @@ function PublicMenu() {
   });
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchMenu = async () => {
@@ -50,6 +52,9 @@ function PublicMenu() {
         }
       } catch (err) {
         console.error("Error fetching menu", err);
+        setError(err.response?.data?.message || "Failed to load restaurant menu. Please try again later.");
+      } finally {
+        setLoading(false);
       }
     };
     fetchMenu();
@@ -91,6 +96,28 @@ function PublicMenu() {
   };
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  if (loading) {
+    return (
+      <div className="public-page public-status-page">
+        <div className="public-spinner"></div>
+        <p>Loading the finest dishes...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="public-page public-status-page">
+        <div className="public-error-icon">⚠️</div>
+        <h3>Oops!</h3>
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()} className="public-add-btn" style={{ maxWidth: '200px', marginTop: '1rem' }}>
+          Try Again
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="public-page">

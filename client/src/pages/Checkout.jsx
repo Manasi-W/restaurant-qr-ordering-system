@@ -18,6 +18,7 @@ function Checkout() {
   });
   const [activeOrders, setActiveOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     localStorage.setItem(`cart_${restaurantURL}_${tableId}`, JSON.stringify(cart));
@@ -48,6 +49,7 @@ function Checkout() {
       setActiveOrders(res.data);
     } catch (err) {
       console.error("Error fetching active orders", err);
+      setError("Failed to load your orders. Please check your connection.");
     } finally {
       setLoading(false);
     }
@@ -73,6 +75,28 @@ function Checkout() {
 
   const totalCart = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const totalActive = activeOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+  if (loading) {
+    return (
+      <div className="public-page public-status-page">
+        <div className="public-spinner"></div>
+        <p>Fetching your bill details...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="public-page public-status-page">
+        <div className="public-error-icon">⚠️</div>
+        <h3>Something went wrong</h3>
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()} className="public-add-btn" style={{ maxWidth: '200px', margin: '1rem auto 0' }}>
+          Reload Page
+        </button>
+      </div>
+    );
+  }
 
   const handlePlaceOrder = async () => {
     if (cart.length === 0) return;
