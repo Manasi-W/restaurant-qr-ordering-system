@@ -105,7 +105,12 @@ function AdminNavbar() {
         >
           Settings
         </NavLink>
-        <button type="button" onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} className="admin-navbar-logout">
+        <button
+          type="button"
+          onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
+          className="admin-navbar-link"
+          style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%', color: '#ef4444' }}
+        >
           Logout
         </button>
       </div>

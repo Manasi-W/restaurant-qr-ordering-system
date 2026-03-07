@@ -57,15 +57,9 @@ function Dashboard() {
     <div className="admin-page">
       <AdminNavbar />
       <div className="admin-container">
-        <header className="admin-header dashboard-header-flex">
-          <div className="admin-header-left">
-            <h1 className="admin-title">Business Overview</h1>
-            <p className="admin-subtitle">Insights for <span style={{ color: "var(--primary)", fontWeight: "600" }}>{restaurantName || "your restaurant"}</span></p>
-          </div>
-          <button onClick={handleLogout} className="admin-header-logout-btn">
-            <LogoutIcon size={20} color="white" />
-            <span>Logout</span>
-          </button>
+        <header className="admin-header">
+          <h1 className="admin-title">Business Overview</h1>
+          <p className="admin-subtitle">Insights for <span style={{ color: "var(--primary)", fontWeight: "600" }}>{restaurantName || "your restaurant"}</span></p>
         </header>
 
         <div className="admin-stats-grid">

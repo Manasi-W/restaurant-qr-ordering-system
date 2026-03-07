@@ -512,8 +512,36 @@
 
 .admin-food-row-metrics {
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   text-align: right;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .admin-food-row-matched {
+    gap: 0.5rem;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .admin-food-name-row {
+    font-size: 0.8rem;
+  }
+
+  .admin-food-row-rank {
+    width: 25px;
+  }
+
+  .admin-rank-number {
+    font-size: 0.9rem;
+  }
+
+  .admin-food-row-metrics {
+    gap: 0.5rem;
+  }
+
+  .admin-metric-value {
+    font-size: 0.8rem;
+  }
 }
 
 .admin-metric-group {
@@ -587,7 +615,7 @@
   gap: 0.75rem;
   text-decoration: none;
   transition: all 0.3s ease;
-  height: 100%;
+  min-height: 120px;
   border: 1px solid rgba(0, 0, 0, 0.06);
   text-align: center;
   box-shadow: var(--shadow-sm);
