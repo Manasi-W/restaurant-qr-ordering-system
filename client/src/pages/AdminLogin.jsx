@@ -2,6 +2,7 @@ import { useState } from "react";
 import api from "../api/axios";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/Auth.css";
+import gourmetSticker from "../assets/gourmet_sticker.png";
 
 function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -26,7 +27,7 @@ function AdminLogin() {
   return (
     <div className="auth-split-container">
       <div className="auth-sticker-panel">
-        <img src="/src/assets/gourmet_sticker.png" alt="Gourmet sticker composition" className="auth-sticker-image" />
+        <img src={gourmetSticker} alt="Gourmet sticker composition" className="auth-sticker-image" />
         <h3>DineDash Admin</h3>
         <p>Manage your restaurant with precision and style. Access your orders, menu, and analytics in one place.</p>
       </div>

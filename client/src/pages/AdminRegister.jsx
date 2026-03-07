@@ -2,6 +2,7 @@ import { useState } from "react";
 import api from "../api/axios";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/Auth.css";
+import gourmetSticker from "../assets/gourmet_sticker.png";
 
 function AdminRegister() {
   const [formData, setFormData] = useState({
@@ -35,7 +36,7 @@ function AdminRegister() {
   return (
     <div className="auth-split-container">
       <div className="auth-sticker-panel">
-        <img src="/src/assets/gourmet_sticker.png" alt="Gourmet sticker composition" className="auth-sticker-image" />
+        <img src={gourmetSticker} alt="Gourmet sticker composition" className="auth-sticker-image" />
         <h3>Grow Your Business</h3>
         <p>Join the future of dining. Set up your digital menu and start taking orders in minutes.</p>
       </div>
