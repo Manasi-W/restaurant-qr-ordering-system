@@ -184,10 +184,10 @@ function Dashboard() {
                 <ServerChefIcon size={44} color="black" />
                 <div className="admin-action-label">Update Menu</div>
               </Link>
-              <button onClick={handleLogout} className="admin-action-box bg-red-soft" style={{ width: '100%', border: 'none', cursor: 'pointer' }}>
-                <LogoutIcon size={44} color="#b91c1c" />
-                <div className="admin-action-label" style={{ color: '#b91c1c' }}>Sign Out</div>
-              </button>
+              <Link to="/admin/profile" className="admin-action-box bg-grey">
+                <SettingsProfileIcon size={44} />
+                <div className="admin-action-label">Settings & Profile</div>
+              </Link>
             </div>
           </div>
         </div>
