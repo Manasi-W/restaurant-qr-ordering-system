@@ -99,6 +99,12 @@
   letter-spacing: -0.05em;
 }
 
+@media (max-width: 640px) {
+  .auth-title-gourmet {
+    font-size: 2.5rem;
+  }
+}
+
 .auth-subtitle-gourmet {
   font-size: 1.1rem;
   color: var(--auth-muted);
@@ -155,6 +161,12 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+}
+
+@media (max-width: 480px) {
+  .auth-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .auth-password-wrapper {

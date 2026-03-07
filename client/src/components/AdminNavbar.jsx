@@ -33,43 +33,79 @@ function AdminNavbar() {
     }
   };
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <nav className="admin-navbar">
-      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-        {adminLogo && (
-          <img src={adminLogo} alt="Logo" style={{ height: "40px", objectFit: "contain" }} />
-        )}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <h2 className="admin-navbar-logo" style={{ marginBottom: 0 }}>
-            Dine<span className="admin-navbar-logo-accent">Dash</span> Admin
-          </h2>
-          {restaurantName && (
-            <span style={{ fontSize: "0.75rem", color: "var(--primary)", fontWeight: "600", marginTop: "-2px" }}>
-              {restaurantName}
-            </span>
+      <div className="admin-navbar-brand">
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          {adminLogo && (
+            <img src={adminLogo} alt="Logo" style={{ height: "32px", objectFit: "contain" }} />
           )}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <h2 className="admin-navbar-logo" style={{ marginBottom: 0, fontSize: "1.1rem" }}>
+              Dine<span className="admin-navbar-logo-accent">Dash</span> Admin
+            </h2>
+            {restaurantName && (
+              <span className="admin-navbar-rest-name">
+                {restaurantName}
+              </span>
+            )}
+          </div>
         </div>
+        <button
+          className="admin-mobile-toggle"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle navigation"
+        >
+          {isMobileMenuOpen ? "✕" : "☰"}
+        </button>
       </div>
-      <div className="admin-navbar-links">
-        <NavLink to="/admin/dashboard" className={({ isActive }) => "admin-navbar-link" + (isActive ? " active" : "")}>
+
+      <div className={`admin-navbar-links ${isMobileMenuOpen ? "mobile-open" : ""}`}>
+        <NavLink
+          to="/admin/dashboard"
+          className={({ isActive }) => "admin-navbar-link" + (isActive ? " active" : "")}
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
           Dashboard
         </NavLink>
-        <NavLink to="/admin/menu" className={({ isActive }) => "admin-navbar-link" + (isActive ? " active" : "")}>
+        <NavLink
+          to="/admin/menu"
+          className={({ isActive }) => "admin-navbar-link" + (isActive ? " active" : "")}
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
           Menu
         </NavLink>
-        <NavLink to="/admin/orders" className={({ isActive }) => "admin-navbar-link" + (isActive ? " active" : "")}>
+        <NavLink
+          to="/admin/orders"
+          className={({ isActive }) => "admin-navbar-link" + (isActive ? " active" : "")}
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
           Orders
         </NavLink>
-        <NavLink to="/admin/tables" className={({ isActive }) => "admin-navbar-link" + (isActive ? " active" : "")}>
+        <NavLink
+          to="/admin/tables"
+          className={({ isActive }) => "admin-navbar-link" + (isActive ? " active" : "")}
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
           Tables
         </NavLink>
-        <NavLink to="/admin/profile" className={({ isActive }) => "admin-navbar-link" + (isActive ? " active" : "")}>
+        <NavLink
+          to="/admin/profile"
+          className={({ isActive }) => "admin-navbar-link" + (isActive ? " active" : "")}
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
           Profile
         </NavLink>
-        <NavLink to="/admin/settings" className={({ isActive }) => "admin-navbar-link" + (isActive ? " active" : "")}>
+        <NavLink
+          to="/admin/settings"
+          className={({ isActive }) => "admin-navbar-link" + (isActive ? " active" : "")}
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
           Settings
         </NavLink>
-        <button type="button" onClick={handleLogout} className="admin-navbar-logout">
+        <button type="button" onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} className="admin-navbar-logout">
           Logout
         </button>
       </div>
