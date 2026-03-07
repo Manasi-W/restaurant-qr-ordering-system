@@ -147,6 +147,18 @@ body {
   color: var(--text-dark);
 }
 
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 2.2rem;
+  }
+}
+
 .hero-content p {
   font-size: 1.1rem;
   color: var(--text-muted);
@@ -247,6 +259,12 @@ body {
   font-size: 2.75rem;
   margin-bottom: 0.5rem;
   color: var(--text-dark);
+}
+
+@media (max-width: 480px) {
+  .section-head h2 {
+    font-size: 1.8rem;
+  }
 }
 
 .section-tag {
@@ -407,6 +425,18 @@ body {
   margin-bottom: 2rem;
 }
 
+@media (max-width: 768px) {
+  .featured-text h2 {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .featured-text h2 {
+    font-size: 2rem;
+  }
+}
+
 .featured-text p {
   color: #57534E;
   font-size: 1.15rem;
@@ -501,6 +531,25 @@ body {
   text-align: center;
   background: var(--bg-primary);
   /* Back to Pure White */
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 4.5rem;
+  font-weight: var(--weight-black);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 2.2rem;
+  }
 }
 
 .services-grid {
@@ -627,6 +676,21 @@ body {
   margin-bottom: 4rem;
 }
 
+@media (max-width: 1024px) {
+  .footer-top {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+}
+
 .footer-col h4 {
   font-size: 1.2rem;
   margin-bottom: 2rem;
@@ -653,6 +717,21 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   color: #7f8c8d;
   font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+
+  .landing-container section,
+  .landing-container header,
+  .landing-container footer {
+    padding-left: 5% !important;
+    padding-right: 5% !important;
+  }
+
+  .landing-container section {
+    padding-top: 6rem !important;
+    padding-bottom: 6rem !important;
+  }
 }
 
 /* Mobile Responsive */

@@ -162,7 +162,7 @@ function Landing() {
             {/* Services Section */}
             <section className="services">
                 <span className="eyebrow" style={{ display: 'block', marginBottom: '1.5rem' }}>Platform Power</span>
-                <h2 className="section-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '4.5rem', fontWeight: 'var(--weight-black)', letterSpacing: 'var(--letter-spacing-tight)' }}>Core Capabilities</h2>
+                <h2 className="section-title">Core Capabilities</h2>
                 <div className="services-grid">
                     <div className="service-card">
                         <div className="service-icon-svg">
