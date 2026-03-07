@@ -20,7 +20,9 @@ function AdminLogin() {
       alert("Login successful");
       navigate("/admin/dashboard");
     } catch (err) {
-      alert("Invalid credentials");
+      console.error("Login Error:", err);
+      const msg = err.response?.data?.message || err.message || "Invalid credentials";
+      alert(msg);
     }
   };
 
