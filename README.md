@@ -96,3 +96,10 @@ DineDash is a premium, full-stack restaurant management and QR-based ordering sy
 
 ## 📝 License
 This project is for demonstration purposes. All rights reserved.
+
+## Test Credentials
+
+Use the following credentials to test the application:
+
+Email: admin@gmail.com
+Password: admin123
